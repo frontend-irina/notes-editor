@@ -1,32 +1,108 @@
-# React + TypeScript + Vite
+# Notes Editor
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Экспериментальный блочный редактор на React, в котором поведение
+[BlockNote](https://www.blocknotejs.org/) воспроизводится поверх
+[Tiptap](https://tiptap.dev/). Оба редактора доступны на одной странице, поэтому
+их поведение можно сравнивать напрямую.
 
-Currently, two official plugins are available:
+> Проект находится в разработке. Backend пока не используется: документы
+> сохраняются локально в браузере.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Возможности
 
-## React Compiler
+- переключение между эталонным BlockNote и собственной реализацией на Tiptap;
+- независимое автосохранение содержимого каждого редактора в `localStorage`;
+- блочная модель с уникальными UUID v7 и вложенными блоками;
+- блоки Paragraph, Heading уровней 1–6 и Quote;
+- выбор типа блока через toolbar;
+- полужирный, курсивный, подчёркнутый и зачёркнутый текст;
+- ссылки, цвет текста и цвет фона;
+- выравнивание текста по левому краю, центру и правому краю;
+- отмена и повтор действий для Tiptap;
+- сериализация между публичной блочной моделью и внутренним документом Tiptap.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Технологии
 
-## Expanding the Oxlint configuration
+- React 19 и TypeScript 6;
+- Vite 8;
+- Tiptap 3 и ProseMirror;
+- BlockNote 0.54;
+- Material UI и Mantine;
+- Oxlint.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Запуск проекта
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+Требуется актуальная LTS-версия Node.js и npm.
+
+```bash
+git clone git@github.com:frontend-irina/notes-editor.git
+cd notes-editor
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+После запуска откройте адрес, указанный Vite в терминале (обычно
+`http://localhost:5173`).
+
+## Команды
+
+```bash
+npm run dev      # локальная разработка
+npm run build    # проверка TypeScript и production-сборка
+npm run lint     # статический анализ
+npm run preview  # просмотр production-сборки
+```
+
+## Хранение данных
+
+На текущем этапе серверной части нет. Редакторы используют разные ключи
+`localStorage`:
+
+| Редактор | Ключ |
+| --- | --- |
+| BlockNote | `editor-playground:blocknote` |
+| Tiptap | `editor-playground:tiptap-blocks` |
+
+Tiptap сохраняет публичный массив блоков, а не внутренний JSON ProseMirror.
+Очистка данных сайта в браузере удалит сохранённые документы.
+
+## Структура
+
+```text
+src/
+├── App.tsx                       # вкладки редакторов и undo/redo
+└── editors/
+    ├── BlockNoteEditor.tsx       # эталонный редактор
+    └── tiptap/
+        ├── TiptapEditor.tsx      # React-интеграция Tiptap
+        ├── TiptapToolbar.tsx     # панель форматирования
+        ├── blocks/               # реализации типов блоков
+        ├── extensions.ts         # схема и поведение ProseMirror
+        ├── serialization.ts      # публичная модель ↔ Tiptap JSON
+        └── storage.ts            # работа с localStorage
+
+docs/
+├── architecture/project.md       # архитектура и соглашения проекта
+└── editor/                       # спецификации поведения редактора
+```
+
+## Документация
+
+- [Архитектура и Code Style](docs/architecture/project.md)
+- [Toolbar](docs/editor/toolbar.md)
+- [Paragraph](docs/editor/blocks/paragraph/paragraph.md)
+- [Heading](docs/editor/blocks/heading.md)
+- [Markdown](docs/editor/markdown.md)
+- [HTML](docs/editor/html.md)
+
+## Проверка изменений
+
+Перед публикацией изменений выполните:
+
+```bash
+npm run lint
+npm run build
+```
+
+Для изменений поведения редактора также проверьте вручную редактирование,
+сохранение после перезагрузки страницы и undo/redo в обоих режимах.
