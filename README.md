@@ -91,7 +91,9 @@ docs/
 - [Архитектура и Code Style](docs/architecture/project.md)
 - [Toolbar](docs/editor/toolbar.md)
 - [Paragraph](docs/editor/blocks/paragraph/paragraph.md)
-- [Heading](docs/editor/blocks/heading.md)
+- [Heading](docs/editor/blocks/heading/heading.md)
+- [Quote](docs/editor/blocks/quote/quote.md)
+- [List types](docs/editor/blocks/list-types/list-types.md)
 - [Markdown](docs/editor/markdown.md)
 - [HTML](docs/editor/html.md)
 

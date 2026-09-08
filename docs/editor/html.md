@@ -18,8 +18,9 @@
 - [Inline Content](./inline-content.md);
 - [Paragraph](./blocks/paragraph/paragraph.md);
 - [HTML для Paragraph](./blocks/paragraph/html.md);
-- [Heading](./blocks/heading.md);
-- [Quote](./blocks/quote.md).
+- [Heading](./blocks/heading/html.md);
+- [Quote](./blocks/quote/html.md);
+- [Элементы списка](./blocks/list-types/html.md).
 
 ## Роль формата
 
@@ -202,133 +203,17 @@ editor.blocksToHTMLLossy(blocks?: Block[]): string;
 
 - Обычный heading экспортируется как `<h1>`–`<h6>` согласно `level`.
 - Дочерние блоки экспортируются отдельно от inline-содержимого `<h1>`–`<h6>`
-  согласно [heading.md](./blocks/heading.md).
+  согласно [heading.md](./blocks/heading/heading.md).
 
 ### Quote
 
-Модель блока и его редакторское поведение определены в [quote.md](./blocks/quote.md).
-
-#### Импорт
-
-- Семантический `<blockquote>` создаёт блок `quote`, если этот тип присутствует в
-  активной схеме. Атрибут `cite` не является частью публичной модели Quote и
-  игнорируется либо отражается в warning расширенного API.
-- Поддерживаемые inline-элементы внутри `<blockquote>` преобразуются в
-  `InlineContent[]` по общим правилам. Сам `<blockquote>` не создаёт лишний
-  paragraph.
-- В полном BlockNote HTML служебные `data-*` props имеют приоритет. Во внешнем
-  HTML `backgroundColor` и `textColor` могут быть прочитаны соответственно из
-  разрешённых `background-color` и `color` в inline style.
-- Значения props проходят prop schema Quote. Отсутствующие, недопустимые или
-  запрещённые значения нормализуются в `"default"` либо отбрасываются с warning.
-  Prop `textAlignment` для Quote не создаётся.
-- Простой пустой `<blockquote></blockquote>` создаёт Quote с `content: []`.
-- Если `<blockquote>` содержит несколько block-level элементов или вложенный
-  `<blockquote>`, importer сохраняет читаемый текст и порядок. Структура
-  восстанавливается в Quote и `children` только при однозначном mapping; иначе она
-  детерминированно раскладывается в поддерживаемые blocks с warning.
-
-#### Полный BlockNote HTML
-
-- Quote сохраняется внутри стандартных `blockOuter` / `blockContainer` wrappers;
-  block content имеет `data-content-type="quote"`, а inline content отображается
-  семантическим `<blockquote>`.
-- Служебная структура сохраняет UUID, `backgroundColor`, `textColor` и отдельный
-  дочерний `blockGroup`, поэтому дети не становятся inline-содержимым
-  `<blockquote>`.
-- В доверенном режиме полный round trip сохраняет type, ID, props, inline content
-  и children Quote.
-
-#### Interoperable HTML
-
-- Quote экспортируется как `<blockquote>…</blockquote>` без обязательных
-  BlockNote wrappers и служебных attrs.
-- Поддерживаемое inline content сериализуется непосредственно внутри элемента.
-- `backgroundColor` и `textColor`, отличающиеся от `"default"`, экспортируются
-  минимальными inline CSS declarations `background-color` и `color`; default-
-  значения не создают styles.
-- Именованные цвета темы перед экспортом преобразуются в соответствующие
-  переносимые CSS-значения.
-- `id` не экспортируется. `children` non-list Quote могут быть выведены после
-  `<blockquote>` как соседние blocks; потеря исходной вложенности отмечается
-  warning.
-
-```html
-<blockquote style="color: #b91c1c">
-  Текст с <strong>жирным</strong> начертанием и
-  <a href="https://example.com">ссылкой</a>.
-</blockquote>
-```
-
-Для простого Quote interoperable round trip сохраняет тип, текст, поддерживаемые
-inline-стили и переносимые block colors. Порядок attrs, пробелы и форма CSS могут
-быть нормализованы.
+Подробные правила импорта, полного и interoperable экспорта вынесены в
+[HTML для Quote](./blocks/quote/html.md).
 
 ### Элементы списка
 
-Модель блоков описана в [list-types.md](./blocks/list-types.md). `<ul>` и `<ol>`
-являются только HTML-представлением группы соседних list-item blocks и не создают
-дополнительный публичный `Block`.
-
-#### Полный BlockNote HTML
-
-- Сохраняет точные `type`, `id`, `DefaultProps`, `start`, `checked`, inline
-  content и `children` через служебные wrappers и `data-*` attrs.
-- `blockGroup` / `blockContainer` сохраняют границы блоков; дочерний `blockGroup`
-  представляет `children` элемента.
-- Локальное раскрытие `toggleListItem` не экспортируется.
-- При импорте валидные служебные данные имеют приоритет над семантическими
-  эвристиками, но props обязательно проходят проверку схемы.
-
-#### Interoperable HTML: экспорт
-
-| Тип блока | Семантический HTML |
-| --- | --- |
-| `bulletListItem` | `<li>` внутри `<ul>` |
-| `numberedListItem` | `<li>` внутри `<ol>` |
-| `checkListItem` | task-list `<li>` внутри `<ul>` с машиночитаемым checked-state |
-| `toggleListItem` | `<details>` / `<summary>` либо документированный lossy fallback |
-
-```html
-<ul>
-  <li>
-    Первый пункт
-    <ol start="3">
-      <li>Вложенный третий пункт</li>
-    </ol>
-  </li>
-  <li>Второй пункт</li>
-</ul>
-```
-
-- Inline content помещается в `<li>` или допустимую внутреннюю текстовую обёртку;
-  такая обёртка при импорте не создаёт дополнительный paragraph.
-- Вложенный список располагается внутри родительского `<li>` и соответствует
-  list-item blocks в его `children`.
-- `start` первого `numberedListItem` группы экспортируется как `<ol start="N">`,
-  если `N` не равно `1`.
-- Явный разрыв нумерации начинает новую `<ol start="N">` либо использует другое
-  валидное HTML-представление, сохраняющее номер.
-- Checklist сохраняет `checked` машиночитаемо; checkbox не подменяется символом в
-  inline content. Конкретные `data-*` attrs и classes определяет профиль экспорта.
-- Неподдерживаемый toggle list упрощается детерминированно до обычного list item с
-  доступными детьми и создаёт diagnostic warning.
-
-#### Interoperable HTML: импорт
-
-- `<ul><li>` создаёт `bulletListItem`, `<ol><li>` — `numberedListItem`.
-- `<ol start="N">` задаёт `start: N` первому элементу; следующие элементы
-  продолжают нумерацию. Поддерживаемый явный номер `<li>` восстанавливается как
-  `start` этого элемента.
-- Вложенный `<ul>` или `<ol>` импортируется в `children`, а не в `InlineContent`.
-- Task-list разметка создаёт `checkListItem` только при однозначном признаке типа
-  и состояния; checkbox преобразуется в `checked` и не входит в текст.
-- Поддерживаемая `<details>` / `<summary>` структура создаёт `toggleListItem`
-  только при однозначном mapping и наличии типа в активной схеме.
-- Inline-elements внутри `<li>` становятся `InlineContent[]`; однозначно
-  вложенные block-level elements восстанавливаются в `children`.
-- Malformed nesting, неизвестные attrs и отсутствующие в схеме типы используют
-  безопасный fallback с diagnostic warning вместо падения импорта.
+Подробные правила полного и interoperable HTML вынесены в
+[HTML для элементов списка](./blocks/list-types/html.md).
 
 ## Безопасность
 

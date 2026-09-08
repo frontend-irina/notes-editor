@@ -18,8 +18,9 @@
 - [Inline Content](./inline-content.md);
 - [Paragraph](./blocks/paragraph/paragraph.md);
 - [Markdown для Paragraph](./blocks/paragraph/markdown.md);
-- [Heading](./blocks/heading.md);
-- [Quote](./blocks/quote.md).
+- [Heading](./blocks/heading/markdown.md);
+- [Quote](./blocks/quote/markdown.md);
+- [Элементы списка](./blocks/list-types/markdown.md).
 
 ## Роль формата
 
@@ -184,7 +185,6 @@ editor.blocksToMarkdownLossy(blocks?: Block[]): string;
 - `backgroundColor`, `textColor` и `textAlignment` уровня блока;
 - inline `underline`, `textColor` и `backgroundColor`;
 - UUID и другие служебные attrs;
-- toggle-состояние и toggle-возможность heading;
 - свойства пользовательских blocks без Markdown-представления;
 - вложенность детей у blocks, которые Markdown не может корректно вкладывать.
 
@@ -204,109 +204,13 @@ diagnostic warning в расширенном API.
 
 ## Quote
 
-Модель блока и его интерактивное поведение определены в
-[quote.md](./blocks/quote.md). В Markdown блок `quote` представлен CommonMark
-blockquote.
-
-### Импорт
-
-- Строка с маркером `>` создаёт блок `quote`, если тип зарегистрирован в активной
-  схеме. Пробел после маркера рекомендуется, но не является обязательным для
-  валидного CommonMark blockquote.
-- Маркеры `>` не входят в `InlineContent[]`; текст, ссылки и поддерживаемые
-  inline-стили внутри цитаты преобразуются по общим правилам Markdown.
-- Продолжающиеся строки одного простого blockquote объединяются в content одного
-  Quote с нормализованными soft/hard breaks.
-- Пустой blockquote создаёт Quote с `content: []`.
-- Markdown не содержит ID и block props Quote. Импортированный блок получает
-  новый UUID v7, а `backgroundColor` и `textColor` принимают значение
-  `"default"`.
-- Если blockquote содержит несколько block-level конструкций, реализация должна
-  сохранить их читаемый текст и порядок. Так как один Quote допускает только
-  `InlineContent[]`, неоднозначная структура нормализуется в последовательность
-  поддерживаемых blocks и сопровождается warning.
-- Дополнительный уровень `>` считается вложенным blockquote. Он восстанавливается
-  через `children` только когда mapping в публичную блочную модель однозначен;
-  иначе вложенность безопасно упрощается с warning, без потери читаемого текста.
-
-### Экспорт
-
-- Каждая физическая строка inline content Quote получает префикс `> `; пустая
-  строка внутри цитаты сериализуется как строка `>`.
-- Поддерживаемые inline-стили и ссылки сериализуются после маркера по общим
-  правилам экспорта.
-- Quote отделяется от соседних top-level blocks пустой строкой, чтобы повторный
-  импорт не объединял независимые blocks.
-- `id`, `backgroundColor` и `textColor` не экспортируются: переносимого
-  CommonMark-представления для них нет.
-- `children` Quote относятся к блочной структуре, а не к его inline content. Если
-  выбранный BlockNote-совместимый lossy exporter выводит их следом как top-level
-  blocks, потеря вложенности должна сопровождаться warning.
-
-Канонический простой пример:
-
-```md
-> Текст с **жирным** начертанием и [ссылкой](https://example.com).
-```
-
-Для простого Quote гарантируется семантический цикл
-`quote → Markdown → quote`: сохраняются тип, текст и поддерживаемое inline-
-форматирование; новый ID и default block colors считаются ожидаемой нормализацией.
+Подробные правила импорта и экспорта CommonMark blockquote вынесены в
+[Markdown для Quote](./blocks/quote/markdown.md).
 
 ## Элементы списка
 
-Модель list-item blocks описана в [list-types.md](./blocks/list-types.md).
-
-### Импорт
-
-| Markdown | Публичная модель |
-| --- | --- |
-| `- пункт`, `* пункт`, `+ пункт` | `bulletListItem` |
-| `1. пункт` или `1) пункт` при поддержке парсером | `numberedListItem` |
-| `- [ ] задача` | `checkListItem` с `checked: false` |
-| `- [x] задача` / `- [X] задача` | `checkListItem` с `checked: true` |
-
-- Исходный bullet marker не хранится: `-`, `*` и `+` создают один тип блока.
-- Начальное число ordered list становится `start` первого элемента;
-  автоматически продолжающиеся номера следующих элементов могут быть опущены.
-- Отступы преобразуются в `children` ближайшего родительского list item по
-  правилам выбранного CommonMark/GFM parser.
-- Маркер и `[ ]` / `[x]` не входят в `content`. Task-list синтаксис распознаётся
-  только внутри list item.
-- Стандартный CommonMark/GFM не создаёт `toggleListItem` без отдельного расширения.
-- Отсутствующий в активной схеме тип заменяется безопасным fallback с warning.
-
-### Экспорт
-
-```md
-- Маркированный пункт
-  3. Вложенный нумерованный пункт
-- [ ] Невыполненная задача
-- [x] Выполненная задача
-```
-
-- `bulletListItem` использует единый канонический marker; исходный marker после
-  round trip сохранять не требуется.
-- `numberedListItem` использует числовой marker. Явный `start` первой группы
-  задаёт начальное число; автоматически продолжающиеся номера нормализуются.
-- Разрыв нумерации начинает новую Markdown-группу либо создаёт diagnostic о потере
-  точного номера.
-- `checkListItem` экспортируется как `[ ]` при `false` и `[x]` при `true`.
-- Дочерние list items получают корректный отступ под родительским marker.
-- Непредставимые вложенные blocks могут быть выведены после списка с warning.
-- `toggleListItem` экспортируется как обычный list item с доступными детьми и
-  warning; toggle-возможность и состояние раскрытия теряются.
-
-### Round trip и потери
-
-Цикл `Markdown → Block[] → Markdown → Block[]` сохраняет порядок, читаемый текст,
-поддерживаемую вложенность, тип bullet/numbered/check list и `checked`. Допустима
-нормализация marker, разделителя ordered list, автоматически продолжающихся
-номеров, отступов, пустых строк и эквивалентной inline-разметки.
-
-Markdown не сохраняет UUID, `DefaultProps`, toggle-возможность и локальное
-toggle-состояние. Произвольные разрывы нумерации также могут быть потеряны, если
-выбранный диалект не позволяет представить их без HTML.
+Подробные правила импорта и экспорта списков вынесены в
+[Markdown для элементов списка](./blocks/list-types/markdown.md).
 
 ## Ошибки и diagnostics
 

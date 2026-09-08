@@ -8,11 +8,11 @@
 
 Связанные спецификации:
 
-- [Идентификатор блока](../block-id.md);
-- [Inline Content](../inline-content.md);
-- [Formatting Toolbar](../toolbar.md);
-- [Импорт и экспорт HTML](../html.md#quote);
-- [Импорт и экспорт Markdown](../markdown.md#quote).
+- [Markdown для Quote](./markdown.md);
+- [HTML для Quote](./html.md);
+- [Идентификатор блока](../../block-id.md);
+- [Inline Content](../../inline-content.md);
+- [Formatting Toolbar](../../toolbar.md).
 
 ## Модель данных
 
@@ -33,7 +33,7 @@ type QuoteBlock = {
 
 ### `id`
 
-- Содержит UUID v7 согласно [block-id.md](../block-id.md).
+- Содержит UUID v7 согласно [block-id.md](../../block-id.md).
 - Не изменяется при редактировании цитаты, перемещении, nest/unnest или преобразовании совместимого блока в Quote и обратно.
 
 ### `type`
@@ -56,7 +56,7 @@ Quote намеренно не содержит `textAlignment`. Панель в�
 - Содержит массив `InlineContent`.
 - Поддерживает обычный текст, стандартные inline styles и ссылки.
 - Пустая цитата представлена как `content: []`.
-- Inline content сериализуется и нормализуется по правилам [inline-content.md](../inline-content.md).
+- Inline content сериализуется и нормализуется по правилам [inline-content.md](../../inline-content.md).
 
 ### `children`
 
@@ -151,7 +151,7 @@ Quote имеет `isolating: false`: границы блока не должны
 
 ## Formatting Toolbar
 
-При выделении текста внутри Quote Formatting Toolbar работает по правилам [toolbar.md](../toolbar.md).
+При выделении текста внутри Quote Formatting Toolbar работает по правилам [toolbar.md](../../toolbar.md).
 
 - Доступны поддерживаемые inline styles и работа со ссылками.
 - `BlockTypeSelect` отображает Quote как текущий тип и позволяет выполнить допустимое преобразование.
@@ -159,17 +159,16 @@ Quote имеет `isolating: false`: границы блока не должны
 - Кнопки `TextAlignButton` для Quote скрыты или недоступны, поскольку блок не имеет `textAlignment`.
 - Nest/unnest выполняет структурное перемещение без изменения ID.
 
-## Импорт и экспорт
+## Форматы обмена
 
-Правила преобразования Quote не дублируются в спецификации блока:
+Форматные правила вынесены в отдельные документы:
 
-- отображение `<blockquote>`, импорт, Full HTML, Interoperable HTML, сохранение
-  props и HTML round trip определены в [html.md](../html.md#quote);
-- CommonMark blockquote, импорт и экспорт `>`, многострочные и вложенные цитаты,
-  lossy-преобразования, diagnostics и Markdown round trip определены в
-  [markdown.md](../markdown.md#quote).
+- [markdown.md](./markdown.md) определяет импорт и экспорт Quote в Markdown;
+- [html.md](./html.md) определяет импорт и экспорт Quote в полный BlockNote HTML
+  и interoperable HTML.
 
-При конфликте профильная спецификация формата является источником истины.
+Каноническим persistence-представлением Quote остаётся публичный JSON, а не
+Markdown или interoperable HTML.
 
 ## Пример JSON
 
@@ -224,6 +223,8 @@ Quote не определяет:
 11. Редактирование, перемещение и nest/unnest не изменяют ID блока.
 12. Преобразование Quote в другой совместимый inline-блок сохраняет content, children и ID.
 13. Undo/redo восстанавливает создание, преобразование, форматирование и структурные изменения Quote.
+14. Импорт и экспорт Markdown соответствуют [markdown.md](./markdown.md).
+15. Импорт и экспорт HTML соответствуют [html.md](./html.md).
 
 ## Вопросы для проверки по эталону
 

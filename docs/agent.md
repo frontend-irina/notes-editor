@@ -26,9 +26,15 @@ BlockNote в приложении используется как эталон �
 - [Блок Paragraph](./editor/blocks/paragraph/paragraph.md) — модель paragraph, стандартные props, создание, редактирование и критерии приёмки.
   - [Markdown для Paragraph](./editor/blocks/paragraph/markdown.md) — импорт, экспорт, потери и round trip Paragraph в Markdown.
   - [HTML для Paragraph](./editor/blocks/paragraph/html.md) — импорт и экспорт Paragraph в полном и interoperable HTML.
-- [Блок Heading](./editor/blocks/heading.md) — уровни заголовков, конфигурация схемы, преобразование, toggle headings, HTML и критерии приёмки.
-- [Блок Quote](./editor/blocks/quote.md) — модель цитаты, props, преобразование, shortcut, input rules, HTML/Markdown и критерии приёмки.
-- [Блоки элементов списка](./editor/blocks/list-types.md) — маркированные, нумерованные, checklist и toggle-элементы, их props, вложенность и нумерация.
+- [Блок Heading](./editor/blocks/heading/heading.md) — уровни заголовков, конфигурация схемы, преобразование и критерии приёмки.
+- [Markdown для Heading](./editor/blocks/heading/markdown.md) — импорт и экспорт Heading в Markdown.
+- [HTML для Heading](./editor/blocks/heading/html.md) — полный BlockNote HTML и interoperable HTML для Heading.
+- [Блок Quote](./editor/blocks/quote/quote.md) — модель цитаты, props, преобразование, shortcut, input rules и критерии приёмки.
+- [Markdown для Quote](./editor/blocks/quote/markdown.md) — импорт и экспорт Quote в Markdown.
+- [HTML для Quote](./editor/blocks/quote/html.md) — полный BlockNote HTML и interoperable HTML для Quote.
+- [Блоки элементов списка](./editor/blocks/list-types/list-types.md) — маркированные, нумерованные, checklist и toggle-элементы, их props, вложенность и нумерация.
+- [Markdown для элементов списка](./editor/blocks/list-types/markdown.md) — импорт и экспорт списков в Markdown.
+- [HTML для элементов списка](./editor/blocks/list-types/html.md) — полный BlockNote HTML и interoperable HTML для списков.
 - [Inline Content](./editor/inline-content.md) — `StyledText`, ссылки, стили, нормализация, выделение, ввод, импорт и экспорт HTML.
 - [Formatting Toolbar](./editor/toolbar.md) — условия показа, стандартный состав, состояния, горячие клавиши, форматирование, структурные команды и кастомизация контекстной панели.
 - [Импорт и экспорт Markdown](./editor/markdown.md) — поддерживаемое подмножество CommonMark/GFM, lossy-преобразования, безопасность, diagnostics и round trip.
@@ -57,7 +63,9 @@ BlockNote в приложении используется как эталон �
 - `docs/editor/` — общие функциональные требования к inline content и пользовательскому поведению редактора.
 - `docs/editor/blocks/` — спецификации отдельных типов блоков.
 - `docs/architecture/` — техническая архитектура, принятые решения, соглашения и устройство интеграций.
-- Для отдельного типа блока использовать отдельный файл в kebab-case, например `heading.md` или `bullet-list-item.md`.
+- Для подробно описываемого типа блока использовать отдельную папку в kebab-case:
+  основной файл `<block-type>.md` и отдельные `markdown.md` и `html.md`, как у
+  `paragraph` и `heading`.
 - Общие правила не следует дублировать во всех блоках: нужно вынести их в отдельную спецификацию и ссылаться на неё.
 - Каждая функциональная спецификация должна по возможности содержать назначение, модель данных, поведение, импорт/экспорт и проверяемые критерии приёмки.
 
@@ -67,7 +75,7 @@ BlockNote в приложении используется как эталон �
 
 - общая форма блока и требования к его ID;
 - блок `paragraph`;
-- блок `heading`, включая конфигурацию уровней и toggle-поведение;
+- блок `heading`, включая конфигурацию уровней, Markdown и HTML;
 - блок `quote`;
 - четыре стандартных типа элементов списка;
 - стандартное inline-содержимое;

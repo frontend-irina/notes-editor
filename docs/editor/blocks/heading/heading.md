@@ -12,12 +12,12 @@
 
 Связанные спецификации:
 
-- [Paragraph](./paragraph/paragraph.md);
-- [Inline Content](../inline-content.md);
-- [Идентификатор блока](../block-id.md);
-- [Formatting Toolbar](../toolbar.md);
-- [HTML](../html.md);
-- [Markdown](../markdown.md).
+- [Markdown для Heading](./markdown.md);
+- [HTML для Heading](./html.md);
+- [Paragraph](../paragraph/paragraph.md);
+- [Inline Content](../../inline-content.md);
+- [Идентификатор блока](../../block-id.md);
+- [Formatting Toolbar](../../toolbar.md).
 
 ## Модель данных
 
@@ -35,8 +35,8 @@ type HeadingBlock = {
 };
 ```
 
-Требования к `id` определены в [block-id.md](../block-id.md). Формат текста,
-ссылок и inline-стилей определён в [inline-content.md](../inline-content.md).
+Требования к `id` определены в [block-id.md](../../block-id.md). Формат текста,
+ссылок и inline-стилей определён в [inline-content.md](../../inline-content.md).
 
 ## Конфигурация схемы
 
@@ -119,7 +119,7 @@ Heading использует те же `DefaultProps`, что и paragraph:
 - Преобразование heading в другой уровень изменяет только `level`, если остальные
   свойства остаются допустимыми.
 - `Mod+Alt+0` преобразует heading в paragraph согласно
-  [спецификации Paragraph](./paragraph/paragraph.md).
+  [спецификации Paragraph](../paragraph/paragraph.md).
 - Каждый поддерживаемый уровень heading должен быть доступен через slash menu и
   block type menu.
 
@@ -142,7 +142,7 @@ Heading участвует в общих операциях блочного р�
 
 Formatting Toolbar должна показывать текущий тип и уровень heading, позволять
 выбрать поддерживаемый уровень и применять inline-форматирование по правилам
-[toolbar.md](../toolbar.md).
+[toolbar.md](../../toolbar.md).
 
 - Dropdown типа блока содержит отдельные пункты «Заголовок 1» … «Заголовок 6»
   для всех уровней из активной конфигурации `levels`.
@@ -153,27 +153,16 @@ Formatting Toolbar должна показывать текущий тип и у
 - Выбор пункта Heading выполняет ту же команду, что и соответствующий shortcut
   `Mod+Alt+N`, и возвращает focus в редактор без потери исходного selection.
 
-## HTML
+## Форматы обмена
 
-### Обычный heading
+Форматные правила вынесены в отдельные документы:
 
-- Heading level 1–6 отображается и экспортируется как `<h1>`–`<h6>`.
-- Inline content располагается внутри соответствующего `<hN>`.
-- Дочерние блоки не становятся inline-содержимым `<hN>` и отображаются в области
-  дочерних блоков блочной обёртки.
-- Отличающиеся от defaults значения `backgroundColor`, `textColor` и
-  `textAlignment` экспортируются как поддерживаемые стили/атрибуты.
-- Default-значения не должны создавать лишние inline-стили.
+- [markdown.md](./markdown.md) определяет импорт и экспорт Heading в Markdown;
+- [html.md](./html.md) определяет импорт и экспорт Heading в полный BlockNote HTML
+  и interoperable HTML.
 
-### Импорт
-
-- `<h1>`–`<h6>` импортируются как `heading` с соответствующим `level`.
-- Поддерживаемые block props восстанавливаются из служебных атрибутов BlockNote,
-  затем из совместимых inline CSS-значений.
-- Inline-разметка внутри `<hN>` преобразуется по правилам
-  [inline-content.md](../inline-content.md).
-- `<details>` и `<summary>` не являются представлением Heading и не должны
-  импортироваться как `HeadingBlock` без отдельного правила другого типа блока.
+Каноническим persistence-представлением Heading остаётся публичный JSON, а не
+Markdown или interoperable HTML.
 
 ## Пример JSON
 
@@ -236,11 +225,11 @@ Formatting Toolbar должна показывать текущий тип и у
 6. Изменение уровня или типа сохраняет `id`, совместимые props, inline content и
    children.
 7. Inline content, ссылки и стили переживают сохранение и повторную загрузку.
-8. Heading экспортируется и импортируется через семантический `<h1>`–`<h6>` без
-   потери поддерживаемых данных.
-9. Read-only режим запрещает изменение документа.
-10. Ошибочный или неподдерживаемый HTML не создаёт некорректный heading.
-11. Formatting Toolbar содержит все разрешённые уровни Heading, корректно
+8. Импорт и экспорт Markdown соответствуют [markdown.md](./markdown.md).
+9. Импорт и экспорт HTML соответствуют [html.md](./html.md).
+10. Read-only режим запрещает изменение документа.
+11. Ошибочный или неподдерживаемый HTML не создаёт некорректный heading.
+12. Formatting Toolbar содержит все разрешённые уровни Heading, корректно
     показывает текущий или mixed-уровень и меняет его с сохранением данных блока.
 
 ## Открытые вопросы для проверки по эталону
