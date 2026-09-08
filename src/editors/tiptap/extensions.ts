@@ -52,7 +52,7 @@ export const BlockGroup = Node.create({
 export const BlockContainer = Node.create({
   name: 'blockContainer',
   group: 'block',
-  content: '(paragraph | heading | quote) blockGroup?',
+  content: '(paragraph | heading | quote | bulletListItem | numberedListItem | checkListItem) blockGroup?',
   defining: true,
   addAttributes() {
     return {

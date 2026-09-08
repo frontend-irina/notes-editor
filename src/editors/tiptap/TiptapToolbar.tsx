@@ -1,4 +1,5 @@
 import {
+  CheckBoxOutlined,
   FormatAlignCenterRounded,
   FormatAlignLeftRounded,
   FormatAlignRightRounded,
@@ -6,6 +7,8 @@ import {
   FormatColorFillRounded,
   FormatColorTextRounded,
   FormatItalicRounded,
+  FormatListBulletedRounded,
+  FormatListNumberedRounded,
   FormatQuoteRounded,
   FormatUnderlinedRounded,
   LinkRounded,
@@ -31,7 +34,8 @@ type TiptapToolbarProps = {
 }
 
 type HeadingBlockType = `heading-${1 | 2 | 3 | 4 | 5 | 6}`
-type SelectableBlockType = 'paragraph' | 'quote' | HeadingBlockType
+type ListBlockType = 'bulletListItem' | 'numberedListItem' | 'checkListItem'
+type SelectableBlockType = 'paragraph' | 'quote' | HeadingBlockType | ListBlockType
 type SelectedBlockType = SelectableBlockType | 'mixed' | null
 
 type ToolbarButtonProps = {
@@ -54,12 +58,57 @@ const COLORS = [
 
 const HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const
 
+const LIST_BLOCKS: Array<{
+  type: ListBlockType
+  label: string
+  shortcut: string
+  icon: ReactNode
+}> = [
+  {
+    type: 'bulletListItem',
+    label: 'Маркированный список',
+    shortcut: 'Mod+Shift+8',
+    icon: <FormatListBulletedRounded fontSize="small" />,
+  },
+  {
+    type: 'numberedListItem',
+    label: 'Нумерованный список',
+    shortcut: 'Mod+Shift+7',
+    icon: <FormatListNumberedRounded fontSize="small" />,
+  },
+  {
+    type: 'checkListItem',
+    label: 'Список с флажками',
+    shortcut: 'Mod+Shift+9',
+    icon: <CheckBoxOutlined fontSize="small" />,
+  },
+]
+
 function selectableTypeFromNode(type: string, level?: unknown): SelectableBlockType | null {
-  if (type === 'paragraph' || type === 'quote') return type
+  if (
+    type === 'paragraph'
+    || type === 'quote'
+    || type === 'bulletListItem'
+    || type === 'numberedListItem'
+    || type === 'checkListItem'
+  ) return type
   if (type === 'heading' && HEADING_LEVELS.includes(level as typeof HEADING_LEVELS[number])) {
     return `heading-${level}` as HeadingBlockType
   }
   return null
+}
+
+function getBlockTypeLabel(type: SelectedBlockType) {
+  if (type === 'mixed') return 'Несколько типов'
+  if (type === 'quote') return 'Цитата'
+  if (type?.startsWith('heading-')) return `Заголовок ${type.slice('heading-'.length)}`
+  return LIST_BLOCKS.find((item) => item.type === type)?.label ?? 'Параграф'
+}
+
+function getBlockTypeIcon(type: SelectedBlockType) {
+  if (type === 'quote') return <FormatQuoteRounded />
+  if (type?.startsWith('heading-')) return <TitleRounded />
+  return LIST_BLOCKS.find((item) => item.type === type)?.icon ?? <TextFieldsRounded />
 }
 
 function getSelectedBlockType(editor: Editor): SelectedBlockType {
@@ -229,20 +278,8 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
       <Button
         size="small"
         color="inherit"
-        startIcon={state.blockType === 'quote'
-          ? <FormatQuoteRounded />
-          : state.blockType?.startsWith('heading-')
-            ? <TitleRounded />
-            : <TextFieldsRounded />}
-        aria-label={`Тип блока: ${
-          state.blockType === 'quote'
-            ? 'цитата'
-            : state.blockType?.startsWith('heading-')
-              ? `заголовок ${state.blockType.slice('heading-'.length)}`
-            : state.blockType === 'mixed'
-              ? 'несколько типов'
-              : 'параграф'
-        }`}
+        startIcon={getBlockTypeIcon(state.blockType)}
+        aria-label={`Тип блока: ${getBlockTypeLabel(state.blockType)}`}
         aria-haspopup="menu"
         aria-expanded={Boolean(blockTypeAnchor)}
         onMouseDown={(event) => event.preventDefault()}
@@ -254,13 +291,7 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
           setBlockTypeAnchor(event.currentTarget)
         }}
       >
-        {state.blockType === 'quote'
-          ? 'Цитата'
-          : state.blockType?.startsWith('heading-')
-            ? `Заголовок ${state.blockType.slice('heading-'.length)}`
-          : state.blockType === 'mixed'
-            ? 'Несколько типов'
-            : 'Параграф'}
+        {getBlockTypeLabel(state.blockType)}
       </Button>
       <Menu
         anchorEl={blockTypeAnchor}
@@ -301,6 +332,22 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
           <FormatQuoteRounded fontSize="small" sx={{ mr: 1.5 }} />
           Цитата
         </MenuItem>
+        {LIST_BLOCKS.map((item) => (
+          <MenuItem
+            key={item.type}
+            selected={state.blockType === item.type}
+            aria-label={`${item.label}, ${item.shortcut}`}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => setBlockType(item.type)}
+          >
+            <span className="tiptap-block-type-icon">{item.icon}</span>
+            <ListItemText
+              primary={item.label}
+              secondary={item.shortcut}
+              slotProps={{ secondary: { component: 'span' } }}
+            />
+          </MenuItem>
+        ))}
       </Menu>
       <Divider orientation="vertical" flexItem />
       <ToolbarButton

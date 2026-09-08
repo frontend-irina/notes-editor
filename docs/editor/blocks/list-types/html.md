@@ -2,8 +2,8 @@
 
 ## Назначение
 
-Документ определяет импорт и экспорт `bulletListItem`, `numberedListItem`,
-`checkListItem` и `toggleListItem` в полном BlockNote HTML и interoperable HTML.
+Документ определяет импорт и экспорт `bulletListItem`, `numberedListItem` и
+`checkListItem` в полном BlockNote HTML и interoperable HTML.
 
 Общие режимы HTML, безопасность, diagnostics и round trip описаны в
 [общей спецификации HTML](../../html.md). Модель блоков определена в
@@ -16,7 +16,7 @@
 - `<ul>` и `<ol>` не создают отдельный публичный `Block`.
 - Inline content элемента находится в `<li>` или его текстовой обёртке.
 - Вложенные элементы располагаются в списке внутри родительского `<li>`.
-- Маркер, номер, checkbox и toggle-кнопка не входят в inline content.
+- Маркер, номер и checkbox не входят в inline content.
 
 ## Импорт HTML
 
@@ -29,8 +29,6 @@
 - Вложенный `<ul>` или `<ol>` импортируется в `children`.
 - Task-list разметка создаёт `checkListItem` только при однозначном признаке;
   checkbox преобразуется в `checked` и не входит в текст.
-- `<details>` / `<summary>` создаёт `toggleListItem` только при однозначном mapping
-  и наличии типа в активной схеме.
 - Inline elements внутри `<li>` преобразуются в `InlineContent[]`.
 - Malformed nesting, неизвестные attrs и отсутствующие типы используют безопасный
   fallback с warning.
@@ -46,7 +44,6 @@
   props обязательно проходят проверку схемы.
 - `data-id` восстанавливается только в доверенном режиме и нормализуется согласно
   [block-id.md](../../block-id.md).
-- Локальное состояние раскрытия `toggleListItem` не импортируется как prop.
 
 ## Экспорт в полный BlockNote HTML
 
@@ -55,7 +52,6 @@
 - Сохраняются `id`, `DefaultProps`, `start`, `checked`, inline content и children.
 - Вложенность записывается отдельными `blockGroup`, а не текстом или маркерами.
 - В доверенном режиме round trip восстанавливает эквивалентные публичные blocks.
-- Локальное раскрытие `toggleListItem` не экспортируется.
 
 ## Экспорт в interoperable HTML
 
@@ -64,7 +60,6 @@
 | `bulletListItem` | `<li>` внутри `<ul>` |
 | `numberedListItem` | `<li>` внутри `<ol>` |
 | `checkListItem` | task-list `<li>` внутри `<ul>` с checked-state |
-| `toggleListItem` | `<details>` / `<summary>` или документированный fallback |
 
 ```html
 <ul>
@@ -85,7 +80,6 @@
 - Явный разрыв нумерации начинает новую `<ol>` либо использует другое валидное
   представление, сохраняющее номер.
 - Checklist сохраняет `checked` машиночитаемо; checkbox не становится текстом.
-- Неподдерживаемый toggle list упрощается детерминированно с warning.
 - Отличающиеся от defaults block props экспортируются переносимыми CSS styles,
   когда это допускает профиль HTML.
 
@@ -94,16 +88,15 @@
 - `<script>`, event-handler attrs и опасные URL не выполняются и не импортируются
   как активный код.
 - CSS обрабатывается по allowlist поддерживаемых свойств и значений.
-- Интерактивные checkbox и `<details>` при импорте рассматриваются как данные, а
-  не как доверенные обработчики поведения.
+- Интерактивные checkbox при импорте рассматриваются как данные, а не как
+  доверенные обработчики поведения.
 - Импорт использует HTML parser, а экспорт экранирует пользовательские данные.
 
 ## Round trip
 
 Полный доверенный HTML сохраняет типы, ID, props, inline content и children.
 Interoperable HTML сохраняет порядок, поддерживаемые типы, текст, вложенность,
-нумерацию и checklist state. UUID, часть block props и локальное toggle-состояние
-могут быть потеряны.
+нумерацию и checklist state. UUID и часть block props могут быть потеряны.
 
 ## Критерии приёмки
 
@@ -113,15 +106,13 @@ Interoperable HTML сохраняет порядок, поддерживаемы
 4. Task-list checked-state сохраняется вне inline content.
 5. Full HTML round trip сохраняет типы, ID, props, content и children.
 6. Interoperable export создаёт семантические `<ul>`, `<ol>` и `<li>`.
-7. Toggle fallback является детерминированным и диагностируется.
-8. Default props не создают лишних inline styles.
-9. Malformed и небезопасный HTML не приводит к исполнению кода или падению.
+7. Default props не создают лишних inline styles.
+8. Malformed и небезопасный HTML не приводит к исполнению кода или падению.
 
 ## Открытые вопросы для проверки по эталону
 
 - точные служебные wrappers и attrs для каждого типа;
 - HTML-профиль task lists и способ хранения `checked`;
-- interoperable-представление `toggleListItem`;
 - разрывы нумерации внутри одной группы;
 - смешанные типы вложенных blocks внутри `<li>`;
 - нормализация пустых элементов списка.

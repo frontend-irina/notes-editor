@@ -160,7 +160,7 @@ editor.blocksToHTMLLossy(blocks?: Block[]): string;
 - Служебный HTML является версионируемым контрактом конкретной схемы, а не
   универсальным HTML для произвольного редактора.
 - Полный HTML не должен включать runtime-only UI: selection, caret, floating
-  toolbar, drag handles, открытые popovers и локальное toggle-состояние.
+  toolbar, drag handles и открытые popovers.
 
 Пример структурной формы:
 

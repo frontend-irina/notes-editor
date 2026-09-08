@@ -234,7 +234,6 @@ Formatting Toolbar — контекстная панель для изменен
 | Heading 1–6 | `Mod+Alt+1` … `Mod+Alt+6` |
 | Quote | `Mod+Alt+Q` |
 | Code block | `Mod+Alt+C` |
-| Toggle list item | `Mod+Shift+6` |
 | Numbered list item | `Mod+Shift+7` |
 | Bullet list item | `Mod+Shift+8` |
 | Check list item | `Mod+Shift+9` |

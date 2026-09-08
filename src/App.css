@@ -82,6 +82,11 @@
   background: currentColor;
 }
 
+.tiptap-block-type-icon {
+  display: inline-flex;
+  margin-right: 12px;
+}
+
 .tiptap {
   min-height: 330px;
   padding: 28px 36px;
@@ -104,6 +109,51 @@
   min-height: 1.7em;
   margin: 0;
   line-height: 1.7;
+}
+.tiptap .tiptap-block-group {
+  counter-reset: tiptap-numbered-list;
+}
+.tiptap .tiptap-block > .tiptap-list-item {
+  display: flex;
+  align-items: baseline;
+  min-height: 1.7em;
+  margin: 0;
+  line-height: 1.7;
+}
+.tiptap .tiptap-block > .tiptap-list-item::before {
+  display: inline-flex;
+  flex: 0 0 24px;
+  justify-content: center;
+  margin-right: 6px;
+}
+.tiptap .tiptap-block > [data-list-type='bullet']::before {
+  content: '•';
+}
+.tiptap .tiptap-block > [data-list-type='numbered'] {
+  counter-increment: tiptap-numbered-list;
+}
+.tiptap .tiptap-block:first-child > [data-list-type='numbered'],
+.tiptap .tiptap-block:not(:has(> [data-list-type='numbered']))
+  + .tiptap-block
+  > [data-list-type='numbered'] {
+  counter-reset: tiptap-numbered-list;
+}
+.tiptap .tiptap-block > [data-list-type='numbered']::before {
+  content: counter(tiptap-numbered-list) '.';
+}
+.tiptap .tiptap-check-list-item {
+  gap: 8px;
+}
+.tiptap .tiptap-check-list-item > input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+.tiptap .tiptap-check-list-item::before {
+  display: none;
+}
+.tiptap .tiptap-list-item-content {
+  min-width: 1px;
+  flex: 1;
 }
 .tiptap .tiptap-block > blockquote {
   min-height: 1.7em;

@@ -25,7 +25,13 @@ export type Link = {
 
 export type InlineContent = StyledText | Link
 
-export type Block = ParagraphBlock | HeadingBlock | QuoteBlock
+export type Block =
+  | ParagraphBlock
+  | HeadingBlock
+  | QuoteBlock
+  | BulletListItemBlock
+  | NumberedListItemBlock
+  | CheckListItemBlock
 
 export type ParagraphBlock = {
   id: string
@@ -59,6 +65,30 @@ export type QuoteBlock = {
     backgroundColor: string
     textColor: string
   }
+  content: InlineContent[]
+  children: Block[]
+}
+
+export type BulletListItemBlock = {
+  id: string
+  type: 'bulletListItem'
+  props: ParagraphBlock['props']
+  content: InlineContent[]
+  children: Block[]
+}
+
+export type NumberedListItemBlock = {
+  id: string
+  type: 'numberedListItem'
+  props: ParagraphBlock['props'] & { start?: number }
+  content: InlineContent[]
+  children: Block[]
+}
+
+export type CheckListItemBlock = {
+  id: string
+  type: 'checkListItem'
+  props: ParagraphBlock['props'] & { checked: boolean }
   content: InlineContent[]
   children: Block[]
 }

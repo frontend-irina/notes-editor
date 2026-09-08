@@ -32,7 +32,7 @@ BlockNote в приложении используется как эталон �
 - [Блок Quote](./editor/blocks/quote/quote.md) — модель цитаты, props, преобразование, shortcut, input rules и критерии приёмки.
 - [Markdown для Quote](./editor/blocks/quote/markdown.md) — импорт и экспорт Quote в Markdown.
 - [HTML для Quote](./editor/blocks/quote/html.md) — полный BlockNote HTML и interoperable HTML для Quote.
-- [Блоки элементов списка](./editor/blocks/list-types/list-types.md) — маркированные, нумерованные, checklist и toggle-элементы, их props, вложенность и нумерация.
+- [Блоки элементов списка](./editor/blocks/list-types/list-types.md) — маркированные, нумерованные и checklist-элементы, их props, вложенность и нумерация.
 - [Markdown для элементов списка](./editor/blocks/list-types/markdown.md) — импорт и экспорт списков в Markdown.
 - [HTML для элементов списка](./editor/blocks/list-types/html.md) — полный BlockNote HTML и interoperable HTML для списков.
 - [Inline Content](./editor/inline-content.md) — `StyledText`, ссылки, стили, нормализация, выделение, ввод, импорт и экспорт HTML.

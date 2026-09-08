@@ -4,6 +4,11 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
 import { Heading } from './blocks/heading'
+import {
+  BulletListItem,
+  CheckListItem,
+  NumberedListItem,
+} from './blocks/list-types'
 import { Paragraph } from './blocks/paragraph'
 import {
   BackgroundColor,
@@ -37,6 +42,9 @@ export function TiptapEditor({ onEditorReady }: TiptapEditorProps) {
       Paragraph,
       Heading,
       Quote,
+      BulletListItem,
+      NumberedListItem,
+      CheckListItem,
       BlockIds,
       BlockBehavior,
       TextColor,
