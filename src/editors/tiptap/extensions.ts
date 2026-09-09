@@ -1,4 +1,5 @@
 import { Extension, Mark, Node, mergeAttributes, textblockTypeInputRule } from '@tiptap/core'
+import type { Editor } from '@tiptap/core'
 import { Plugin, PluginKey, TextSelection } from '@tiptap/pm/state'
 import { defaultBlockProps } from './types'
 import { uuidV7 } from './uuid'
@@ -147,10 +148,53 @@ function currentBlockDepth($from: TextSelection['$from']) {
   return -1
 }
 
+function deleteEmptyBlockAndSelectPrevious(editor: Editor) {
+  const { state, view } = editor
+  const { selection } = state
+
+  if (!(selection instanceof TextSelection) || !selection.empty) return false
+
+  const { $from } = selection
+  const blockDepth = currentBlockDepth($from)
+  if (blockDepth < 0) return false
+
+  const block = $from.node(blockDepth)
+  const blockContent = block.firstChild
+  if (
+    !blockContent
+    || $from.parent !== blockContent
+    || blockContent.content.size !== 0
+  ) return false
+
+  const parentDepth = blockDepth - 1
+  const blockIndex = $from.index(parentDepth)
+
+  // A block can only be removed when a previous sibling remains in the same
+  // group. This also keeps the `blockContainer+` schema valid.
+  if (blockIndex === 0) return false
+
+  const blockPosition = $from.before(blockDepth)
+  const transaction = state.tr.delete(
+    blockPosition,
+    blockPosition + block.nodeSize,
+  )
+  const previousBlockEnd = transaction.doc.resolve(blockPosition - 1)
+
+  view.dispatch(
+    transaction
+      .setSelection(TextSelection.near(previousBlockEnd, -1))
+      .scrollIntoView(),
+  )
+  return true
+}
+
 export const BlockBehavior = Extension.create({
   name: 'blockBehavior',
+  priority: 1_000,
   addKeyboardShortcuts() {
     return {
+      Backspace: () => deleteEmptyBlockAndSelectPrevious(this.editor),
+      Delete: () => deleteEmptyBlockAndSelectPrevious(this.editor),
       Enter: () => {
         const { state, view } = this.editor
         const { $from } = state.selection

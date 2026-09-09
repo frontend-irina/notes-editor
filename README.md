@@ -88,6 +88,7 @@ docs/
 
 ## Документация
 
+- [OpenSpec: процесс работы с изменениями](docs/architecture/openspec.md)
 - [Архитектура и Code Style](docs/architecture/project.md)
 - [Toolbar](docs/editor/toolbar.md)
 - [Paragraph](docs/editor/blocks/paragraph/paragraph.md)
