@@ -10,6 +10,7 @@ import {
   NumberedListItem,
 } from './blocks/list-types'
 import { Paragraph } from './blocks/paragraph'
+import { DragAndDrop } from './drag-and-drop'
 import {
   BackgroundColor,
   BlockContainer,
@@ -47,6 +48,7 @@ export function TiptapEditor({ onEditorReady }: TiptapEditorProps) {
       CheckListItem,
       BlockIds,
       BlockBehavior,
+      DragAndDrop,
       TextColor,
       BackgroundColor,
     ],

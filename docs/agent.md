@@ -37,6 +37,7 @@ BlockNote в приложении используется как эталон �
 - [HTML для элементов списка](./editor/blocks/list-types/html.md) — полный BlockNote HTML и interoperable HTML для списков.
 - [Inline Content](./editor/inline-content.md) — `StyledText`, ссылки, стили, нормализация, выделение, ввод, импорт и экспорт HTML.
 - [Formatting Toolbar](./editor/toolbar.md) — условия показа, стандартный состав, состояния, горячие клавиши, форматирование, структурные команды и кастомизация контекстной панели.
+- [Drag-and-drop блоков](./editor/drag-and-drop.md) — Side Menu и drag handle, multi-block selection, drop cursor, перенос внутри одного и между несколькими редакторами, история и критерии приёмки.
 - [Импорт и экспорт Markdown](./editor/markdown.md) — поддерживаемое подмножество CommonMark/GFM, lossy-преобразования, безопасность, diagnostics и round trip.
 - [Импорт и экспорт HTML](./editor/html.md) — импорт HTML, полный BlockNote HTML, interoperable HTML, безопасность, diagnostics и round trip.
 
@@ -80,13 +81,14 @@ BlockNote в приложении используется как эталон �
 - четыре стандартных типа элементов списка;
 - стандартное inline-содержимое;
 - поведение и контракт Formatting Toolbar;
+- drag-and-drop одного блока и выбранного диапазона, включая перенос между редакторами;
 - импорт и экспорт Markdown как lossy-формат обмена;
 - импорт и экспорт полного и interoperable HTML.
 
 Пока не выделены в самостоятельные спецификации:
 
 - общие клавиатурные операции над блоками;
-- выделение, drag-and-drop и изменение вложенности;
+- общие правила multi-block selection и изменения вложенности вне drag-and-drop;
 - остальные стандартные блоки BlockNote;
 - публичный API надстройки;
 - совместное редактирование;

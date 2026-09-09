@@ -99,6 +99,59 @@
   position: relative;
   border-radius: 4px;
 }
+.tiptap-drag-handle {
+  position: absolute;
+  z-index: 2;
+  left: -30px;
+  display: flex;
+  width: 26px;
+  height: 28px;
+  cursor: grab;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #8a8e9d;
+  font: 700 15px/1 sans-serif;
+  opacity: 0;
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+.tiptap-block:hover > .tiptap-drag-handle,
+.tiptap-drag-handle:focus-visible {
+  opacity: 1;
+}
+.tiptap-drag-handle:hover,
+.tiptap-drag-handle:focus-visible {
+  background: #eceef5;
+  color: #424654;
+  outline: none;
+}
+.tiptap-drag-handle:active { cursor: grabbing; }
+.tiptap-drop-cursor {
+  position: relative;
+  z-index: 5;
+  display: block;
+  height: 3px;
+  margin: -2px 0 -1px;
+  border-radius: 999px;
+  background: #5b5bd6;
+  pointer-events: none;
+}
+.tiptap-block-drag-preview {
+  position: fixed;
+  top: -10000px;
+  left: -10000px;
+  max-width: 560px;
+  padding: 8px 12px;
+  border: 1px solid #dfe2ea;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(32, 36, 52, 0.18);
+  opacity: 0.9;
+  pointer-events: none;
+}
 .tiptap .tiptap-block > p,
 .tiptap .tiptap-block > h1,
 .tiptap .tiptap-block > h2,
