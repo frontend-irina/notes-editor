@@ -1,4 +1,10 @@
+.tiptap-toolbar-layer {
+  z-index: 100 !important;
+}
+
 .tiptap-toolbar {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 3px;

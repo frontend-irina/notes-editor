@@ -11,6 +11,7 @@ import {
 } from './blocks/list-types'
 import { Paragraph } from './blocks/paragraph'
 import { DragAndDrop } from './drag-and-drop'
+import { BlockMenu, BlockMenuView } from './menu'
 import {
   BackgroundColor,
   BlockContainer,
@@ -49,6 +50,7 @@ export function TiptapEditor({ onEditorReady }: TiptapEditorProps) {
       BlockIds,
       BlockBehavior,
       DragAndDrop,
+      BlockMenu,
       TextColor,
       BackgroundColor,
     ],
@@ -68,7 +70,9 @@ export function TiptapEditor({ onEditorReady }: TiptapEditorProps) {
   return (
     <div className="tiptap-shell">
       <EditorContent editor={editor} />
+      <BlockMenuView editor={editor} />
       <BubbleMenu
+        className="tiptap-toolbar-layer"
         editor={editor}
         options={{ placement: 'top' }}
         shouldShow={({ state }) => !state.selection.empty}

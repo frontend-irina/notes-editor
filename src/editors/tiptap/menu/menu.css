@@ -1,0 +1,77 @@
+.tiptap-add-block-button {
+  position: absolute;
+  z-index: 2;
+  top: calc((var(--tiptap-first-line-height) - 28px) / 2);
+  left: -64px;
+  display: flex;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #8a8e9d;
+  font: 500 22px/1 sans-serif;
+  opacity: 0;
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.tiptap-add-block-icon {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.tiptap-add-block-icon::before,
+.tiptap-add-block-icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  content: '';
+  transform: translate(-50%, -50%);
+}
+
+.tiptap-add-block-icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.tiptap-block:hover > .tiptap-add-block-button,
+.tiptap-add-block-button:focus-visible {
+  opacity: 1;
+}
+
+.tiptap-add-block-button:hover,
+.tiptap-add-block-button:focus-visible {
+  background: #eceef5;
+  color: #424654;
+  outline: none;
+}
+
+.tiptap-block-menu {
+  position: fixed;
+  z-index: 80;
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(440px, calc(100vh - 24px));
+  overflow-y: auto;
+}
+
+.tiptap-block-menu-group {
+  display: block;
+  padding: 8px 16px 4px;
+  color: #777b89;
+}
+
+.tiptap-block-menu-badge {
+  margin-left: 16px;
+  color: #777b89;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}

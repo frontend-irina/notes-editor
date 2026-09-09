@@ -62,22 +62,30 @@
 
 .tiptap {
   min-height: 330px;
-  padding: 28px 36px;
+  padding: 28px 72px;
   color: #242632;
   outline: none;
 }
 
 .tiptap > :first-child { margin-top: 0; }
 .tiptap .tiptap-block {
+  --tiptap-first-line-height: 27.2px;
   position: relative;
   border-radius: 4px;
 }
+.tiptap .tiptap-block:has(> h1) { --tiptap-first-line-height: 54.4px; }
+.tiptap .tiptap-block:has(> h2) { --tiptap-first-line-height: 40.8px; }
+.tiptap .tiptap-block:has(> h3) { --tiptap-first-line-height: 31.8px; }
+.tiptap .tiptap-block:has(> h4) { --tiptap-first-line-height: 27.2px; }
+.tiptap .tiptap-block:has(> h5) { --tiptap-first-line-height: 22.6px; }
+.tiptap .tiptap-block:has(> h6) { --tiptap-first-line-height: 18.2px; }
 .tiptap-drag-handle {
   position: absolute;
   z-index: 2;
-  left: -30px;
+  top: calc((var(--tiptap-first-line-height) - 28px) / 2);
+  left: -34px;
   display: flex;
-  width: 26px;
+  width: 28px;
   height: 28px;
   cursor: grab;
   align-items: center;
@@ -199,5 +207,6 @@
 @media (max-width: 600px) {
   .editor-panel { padding: 12px; }
   .tabs-bar { padding: 0 4px; }
-  .bn-editor, .tiptap { padding-inline: 18px !important; }
+  .bn-editor { padding-inline: 18px !important; }
+  .tiptap { padding-inline: 64px; }
 }
