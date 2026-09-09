@@ -22,7 +22,7 @@ import {
   TextColor,
 } from './extensions'
 import { loadTiptapContent, saveTiptapContent } from './storage'
-import { TiptapToolbar } from './TiptapToolbar'
+import { TiptapToolbar } from './toolbar'
 
 type TiptapEditorProps = {
   onEditorReady: (editor: Editor | null) => void
