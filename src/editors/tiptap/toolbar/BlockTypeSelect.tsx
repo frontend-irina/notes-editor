@@ -5,14 +5,14 @@ import {
 } from '@mui/icons-material'
 import { Button, ListItemText, Menu, MenuItem } from '@mui/material'
 import type { Editor } from '@tiptap/core'
-import { useRef, useState, type MouseEvent } from 'react'
+import { useBlockTypeSelect } from './use-block-type-select'
 import {
   getBlockTypeIcon,
   getBlockTypeLabel,
   HEADING_LEVELS,
   LIST_BLOCKS,
 } from './blockTypes'
-import type { SelectableBlockType, SelectedBlockType } from './types'
+import type { SelectedBlockType } from './types'
 
 type BlockTypeSelectProps = {
   editor: Editor
@@ -20,26 +20,7 @@ type BlockTypeSelectProps = {
 }
 
 export function BlockTypeSelect({ editor, selectedType }: BlockTypeSelectProps) {
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
-  const selection = useRef<{ from: number; to: number } | null>(null)
-
-  const setBlockType = (type: SelectableBlockType) => {
-    if (selectedType === type) {
-      setAnchor(null)
-      return
-    }
-
-    const chain = editor.chain().focus()
-    if (selection.current) chain.setTextSelection(selection.current)
-    if (type.startsWith('heading-')) {
-      chain.setNode('heading', { level: Number(type.slice('heading-'.length)) })
-    } else {
-      chain.setNode(type)
-    }
-    if (type === 'quote') chain.updateAttributes('blockContainer', { textAlignment: 'left' })
-    chain.run()
-    setAnchor(null)
-  }
+  const { anchor, openMenu, closeMenu, setBlockType } = useBlockTypeSelect(editor, selectedType)
 
   return (
     <>
@@ -51,20 +32,14 @@ export function BlockTypeSelect({ editor, selectedType }: BlockTypeSelectProps) 
         aria-haspopup="menu"
         aria-expanded={Boolean(anchor)}
         onMouseDown={(event) => event.preventDefault()}
-        onClick={(event: MouseEvent<HTMLButtonElement>) => {
-          selection.current = {
-            from: editor.state.selection.from,
-            to: editor.state.selection.to,
-          }
-          setAnchor(event.currentTarget)
-        }}
+        onClick={openMenu}
       >
         {getBlockTypeLabel(selectedType)}
       </Button>
       <Menu
         anchorEl={anchor}
         open={Boolean(anchor)}
-        onClose={() => setAnchor(null)}
+        onClose={closeMenu}
         aria-label="Тип блока"
         disablePortal
       >
