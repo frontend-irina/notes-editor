@@ -1,0 +1,51 @@
+schema: spec-driven
+
+context: |
+  Language: Russian
+  All artifacts must be written in Russian.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+  Project: Notes Editor, a playground implementing BlockNote-compatible behavior on Tiptap.
+  Stack: React 19, TypeScript 6, Vite 8, Tiptap 3 / ProseMirror, BlockNote 0.54,
+  Material UI, Mantine, npm with package-lock.json, ES modules, Oxlint.
+  BlockNote is the behavioral reference; the Tiptap editor is the implementation.
+  Read docs/agent.md first, then the relevant docs/editor/ specifications and
+  docs/architecture/project.md. Existing docs/ requirements remain authoritative
+  unless the change explicitly proposes and implements an update to them.
+  Reference existing requirements instead of duplicating them. OpenSpec deltas
+  describe proposed changes; synchronize affected docs/ files before archiving.
+  Update docs/agent.md whenever documents in docs/ are added, moved or removed.
+  Preserve the public block model; internal Tiptap JSON is not the public format.
+  Documents are stored in localStorage; there is no backend or collaboration yet.
+  Follow the existing TypeScript style: single quotes, no semicolons, strict types.
+  Required checks: npm run lint and npm run build. For editor behavior changes,
+  verify affected acceptance scenarios, persistence, and undo/redo in the browser.
+
+rules:
+  proposal:
+    - Cite the relevant existing specifications and explain any intentional change to their requirements.
+  specs:
+    - Use testable requirements and scenarios; link to unchanged details in docs/editor/.
+  tasks:
+    - Include documentation synchronization and the checks relevant to the change.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
