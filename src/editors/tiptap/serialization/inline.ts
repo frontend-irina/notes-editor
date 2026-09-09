@@ -61,7 +61,9 @@ export function tiptapInlineToBlockNote(nodes: readonly JSONContent[] = []): Inl
       const previous = result.at(-1)
       if (
         previous?.type === 'text'
-        && JSON.stringify(previous.styles) === JSON.stringify(text.styles)
+        && Object.keys(previous.styles).length === Object.keys(text.styles).length
+        && (Object.keys(previous.styles) as Array<keyof TextStyles>)
+          .every((key) => previous.styles[key] === text.styles[key])
       ) {
         previous.text += text.text
       } else {

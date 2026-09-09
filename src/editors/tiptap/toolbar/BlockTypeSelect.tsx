@@ -41,7 +41,6 @@ export function BlockTypeSelect({ editor, selectedType }: BlockTypeSelectProps) 
         open={Boolean(anchor)}
         onClose={closeMenu}
         aria-label="Тип блока"
-        disablePortal
       >
         <MenuItem
           selected={selectedType === 'paragraph'}

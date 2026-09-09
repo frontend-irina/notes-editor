@@ -8,7 +8,7 @@ type EditorHistoryActionsProps = { editor: Editor | null }
 export function EditorHistoryActions({ editor }: EditorHistoryActionsProps) {
   const historyState = useEditorState({
     editor,
-    selector: ({ editor }) => ({
+    selector: () => ({
       canUndo: editor?.can().undo() ?? false,
       canRedo: editor?.can().redo() ?? false,
     }),
