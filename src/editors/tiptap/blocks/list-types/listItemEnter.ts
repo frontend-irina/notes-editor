@@ -2,13 +2,7 @@ import type { Editor } from '@tiptap/core'
 import { TextSelection } from '@tiptap/pm/state'
 import { defaultBlockProps } from '../../types'
 import { uuidV7 } from '../../uuid'
-
-function getBlockDepth($from: TextSelection['$from']) {
-  for (let depth = $from.depth; depth > 0; depth -= 1) {
-    if ($from.node(depth).type.name === 'blockContainer') return depth
-  }
-  return -1
-}
+import { getBlockDepth } from '../shared/block-position'
 
 export function handleListItemEnter(editor: Editor, listItemType: string) {
   const { state, view } = editor

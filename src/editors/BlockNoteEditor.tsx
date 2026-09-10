@@ -4,6 +4,7 @@ import { BlockNoteView } from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
 import { useCreateBlockNote } from '@blocknote/react'
 import { Alert } from '@mui/material'
+import './blocknote-editor.css'
 
 const STORAGE_KEY = 'editor-playground:blocknote'
 

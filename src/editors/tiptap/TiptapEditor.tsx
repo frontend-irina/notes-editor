@@ -1,29 +1,14 @@
 import type { Editor } from '@tiptap/core'
 import { BubbleMenu } from '@tiptap/react/menus'
 import { EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
-import { Heading } from './blocks/heading'
-import {
-  BulletListItem,
-  CheckListItem,
-  NumberedListItem,
-} from './blocks/list-types'
-import { Paragraph } from './blocks/paragraph'
-import { DragAndDrop } from './drag-and-drop'
-import { BlockMenu, BlockMenuView } from './menu'
-import {
-  BackgroundColor,
-  BlockContainer,
-  BlockDocument,
-  BlockGroup,
-  BlockIds,
-  BlockBehavior,
-  Quote,
-  TextColor,
-} from './extensions'
+import { BlockMenuView } from './menu'
+import { createEditorExtensions } from './editor-extensions'
 import { loadTiptapContent, saveTiptapContent } from './storage'
 import { TiptapToolbar } from './toolbar'
+import './editor.css'
+import './blocks/list-types/list-types.css'
+import './drag-and-drop/drag-and-drop.css'
 
 type TiptapEditorProps = {
   onEditorReady: (editor: Editor | null) => void
@@ -31,29 +16,7 @@ type TiptapEditorProps = {
 
 export function TiptapEditor({ onEditorReady }: TiptapEditorProps) {
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        document: false,
-        blockquote: false,
-        heading: false,
-        paragraph: false,
-      }),
-      BlockDocument,
-      BlockGroup,
-      BlockContainer,
-      Paragraph,
-      Heading,
-      Quote,
-      BulletListItem,
-      NumberedListItem,
-      CheckListItem,
-      BlockIds,
-      BlockBehavior,
-      DragAndDrop,
-      BlockMenu,
-      TextColor,
-      BackgroundColor,
-    ],
+    extensions: createEditorExtensions(),
     content: loadTiptapContent(),
     onUpdate: ({ editor: currentEditor }) => {
       saveTiptapContent(currentEditor.getJSON())

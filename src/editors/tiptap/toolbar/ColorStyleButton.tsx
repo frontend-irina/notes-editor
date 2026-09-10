@@ -44,7 +44,6 @@ export function ColorStyleButton({ editor }: TiptapToolbarProps) {
         open={Boolean(anchorElement)}
         onClose={() => setAnchorElement(null)}
         aria-label="Выбор цвета"
-        disablePortal
       >
         <MenuItem disabled>Цвет текста</MenuItem>
         {COLORS.map((color) => (
