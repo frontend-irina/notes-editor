@@ -1,0 +1,55 @@
+.tiptap-shell {
+  overflow: hidden;
+  min-height: 390px;
+  border: 1px solid #e1e4ed;
+  border-radius: 10px;
+}
+
+.tiptap {
+  min-height: 330px;
+  padding: 28px 72px;
+  color: #242632;
+  outline: none;
+}
+
+.tiptap > :first-child { margin-top: 0; }
+.tiptap .tiptap-block {
+  --tiptap-first-line-height: 27.2px;
+  position: relative;
+  border-radius: 4px;
+}
+.tiptap .tiptap-block:has(> h1) { --tiptap-first-line-height: 54.4px; }
+.tiptap .tiptap-block:has(> h2) { --tiptap-first-line-height: 40.8px; }
+.tiptap .tiptap-block:has(> h3) { --tiptap-first-line-height: 31.8px; }
+.tiptap .tiptap-block:has(> h4) { --tiptap-first-line-height: 27.2px; }
+.tiptap .tiptap-block:has(> h5) { --tiptap-first-line-height: 22.6px; }
+.tiptap .tiptap-block:has(> h6) { --tiptap-first-line-height: 18.2px; }
+.tiptap .tiptap-block > p,
+.tiptap .tiptap-block > h1,
+.tiptap .tiptap-block > h2,
+.tiptap .tiptap-block > h3,
+.tiptap .tiptap-block > h4,
+.tiptap .tiptap-block > h5,
+.tiptap .tiptap-block > h6 {
+  min-height: 1.7em;
+  margin: 0;
+  line-height: 1.7;
+}
+.tiptap .tiptap-block > blockquote {
+  min-height: 1.7em;
+  margin: 0;
+  padding-left: 16px;
+  border-left: 3px solid #a8abb8;
+  color: inherit;
+  line-height: 1.7;
+}
+.tiptap .tiptap-block-group {
+  margin-left: 26px;
+  padding-left: 14px;
+  border-left: 1px solid #e1e4ed;
+}
+.tiptap:focus { box-shadow: inset 0 0 0 2px rgba(91, 91, 214, 0.12); }
+
+@media (max-width: 600px) {
+  .tiptap { padding-inline: 64px; }
+}

@@ -8,7 +8,7 @@ export const BulletListItem = Node.create({
   content: 'inline*',
   defining: true,
 
-  parseHTML: () => [{ tag: 'li[data-list-type="bullet"]' }],
+  parseHTML: () => [{ tag: 'li[data-list-type="bullet"]', priority: 100 }],
   renderHTML: ({ HTMLAttributes }) => [
     'div',
     { ...HTMLAttributes, 'data-list-type': 'bullet', class: 'tiptap-list-item' },

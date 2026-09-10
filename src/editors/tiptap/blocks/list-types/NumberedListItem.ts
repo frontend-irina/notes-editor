@@ -20,7 +20,7 @@ export const NumberedListItem = Node.create({
     }
   },
 
-  parseHTML: () => [{ tag: 'li[data-list-type="numbered"]' }],
+  parseHTML: () => [{ tag: 'li[data-list-type="numbered"]', priority: 100 }],
   renderHTML({ node, HTMLAttributes }) {
     const start = typeof node.attrs.start === 'number' ? node.attrs.start : null
     return [

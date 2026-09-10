@@ -1,0 +1,12 @@
+.bn-container[data-theming-css-demo] {
+  width: 100%;
+}
+
+.bn-editor {
+  min-height: 380px;
+  padding-inline: 36px !important;
+}
+
+@media (max-width: 600px) {
+  .bn-editor { padding-inline: 18px !important; }
+}

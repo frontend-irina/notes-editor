@@ -16,7 +16,7 @@ export const CheckListItem = Node.create({
     }
   },
 
-  parseHTML: () => [{ tag: 'li[data-list-type="check"]' }],
+  parseHTML: () => [{ tag: 'li[data-list-type="check"]', priority: 100 }],
   renderHTML: ({ node, HTMLAttributes }) => [
     'div',
     {

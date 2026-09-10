@@ -51,7 +51,14 @@ npm run dev      # локальная разработка
 npm run build    # проверка TypeScript и production-сборка
 npm run lint     # статический анализ
 npm run preview  # просмотр production-сборки
+npm test         # все Vitest-тесты без watch
+npm run test:watch     # повторный запуск при изменениях
+npm run test:types     # типизация тестов и конфигурации
+npm run test:coverage  # покрытие V8, HTML-отчёт в coverage/
 ```
+
+Тесты находятся рядом с модулями (`*.test.ts`, `*.test.tsx`). Матрица сценариев,
+общие fixtures и ограничения jsdom описаны в [руководстве по тестированию](docs/architecture/testing.md).
 
 ## Хранение данных
 
@@ -75,9 +82,11 @@ src/
     ├── BlockNoteEditor.tsx       # эталонный редактор
     └── tiptap/
         ├── TiptapEditor.tsx      # React-интеграция Tiptap
-        ├── TiptapToolbar.tsx     # панель форматирования
+        ├── toolbar/             # панель форматирования и её элементы
         ├── blocks/               # реализации типов блоков
-        ├── extensions.ts         # схема и поведение ProseMirror
+        ├── editor-extensions.ts  # сборка расширений
+        ├── schema/               # структурная схема ProseMirror
+        ├── extensions/           # общие инварианты и shortcuts
         ├── serialization.ts      # публичная модель ↔ Tiptap JSON
         └── storage.ts            # работа с localStorage
 

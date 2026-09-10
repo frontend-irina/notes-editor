@@ -1,7 +1,8 @@
 import { ListItemText, MenuItem, MenuList, Paper, Portal, Typography } from '@mui/material'
 import type { Editor } from '@tiptap/core'
 import { useEditorState } from '@tiptap/react'
-import { blockMenuKey, executeBlockMenuItem } from './BlockMenu'
+import { blockMenuKey } from './menu-state'
+import { executeBlockMenuItem } from './menu-commands'
 import { filterBlockMenuItems } from './items'
 import './menu.css'
 
