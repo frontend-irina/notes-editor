@@ -20,14 +20,14 @@ npm run build
 
 - По умолчанию Node. DOM и React-тесты объявляют `// @vitest-environment jsdom`.
 - `fixtures.ts` создаёт блочные JSON-документы; `create-editor.ts` создаёт настоящую schema, EditorState и отдельные Tiptap Editor. Редакторы уничтожаются после каждого теста вместе с DOM-host и общей drag session.
-- `setup.ts` восстанавливает mocks, globals, timers и очищает localStorage. `react.ts` подключает jest-dom и React cleanup. `dom-mocks.ts` задаёт предсказуемую геометрию Range/HTMLElement и заглушку scrollBy: это заменяет отсутствующий layout, а не проверяет его.
+- `setup.ts` восстанавливает mocks, globals и timers. `react.ts` подключает jest-dom и React cleanup. `dom-mocks.ts` задаёт предсказуемую геометрию Range/HTMLElement и заглушку scrollBy: это заменяет отсутствующий layout, а не проверяет его.
 - `drag-event.ts` моделирует только DataTransfer и координаты. Проверки Slice, transactions, документов и history используют настоящие ProseMirror API.
-- BlockNote-тесты подменяют сторонние useCreateBlockNote/BlockNoteView и проверяют наш storage-адаптер. В интеграции Tiptap подменён только BubbleMenu из внешнего пакета: отдельно проверяется переданный shouldShow, а внутренние editor, menu, toolbar и persistence остаются настоящими.
+- В интеграции Tiptap подменён только BubbleMenu из внешнего пакета: отдельно проверяется переданный shouldShow, а внутренние editor, menu, toolbar, `initialBlocks` и `onChange` остаются настоящими.
 - Composition guard проверяется прямым вызовом обработчика: синтетический isComposing на одном KeyboardEvent не создаёт полноценную IME-сессию ProseMirror.
 
 ## Полнота и покрытие
 
-`src/test/module-inventory.test.ts` проверяет наличие соседнего теста у каждого исполняемого модуля `src/editors` и у `src/app/EditorHistoryActions.tsx`. AST-проверка отличает файлы только с типами и реэкспортами от runtime-кода. `tiptap/types.ts` содержит defaults и включён в runtime-проверки.
+`src/test/module-inventory.test.ts` проверяет наличие соседнего теста у каждого исполняемого модуля `src/editors`. AST-проверка отличает файлы только с типами и реэкспортами от runtime-кода. `tiptap/types.ts` содержит defaults и включён в runtime-проверки.
 
 Coverage V8 включает также неисполненные файлы. Отчёты: терминал, `coverage/index.html`, `coverage/coverage-summary.json`; каталог не добавляется в Git. Процент покрытия — диагностический показатель, а не доказательство правильности. Обязательные сценарии не скрываются через skip/todo. Падающий регрессионный тест остаётся активным до согласованного исправления.
 
@@ -45,9 +45,8 @@ jsdom не проверяет нативный drag, реальную IME, ви�
 
 | Модуль | Тест | Сценарии |
 | --- | --- | --- |
-| [src/app/EditorHistoryActions.tsx](../../src/app/EditorHistoryActions.tsx) | [EditorHistoryActions.test.tsx](../../src/app/EditorHistoryActions.test.tsx) | Undo/redo, ??????????? ??????, ?????? editor; ????????? ?????????? |
-| [src/editors/BlockNoteEditor.tsx](../../src/editors/BlockNoteEditor.tsx) | [BlockNoteEditor.test.tsx](../../src/editors/BlockNoteEditor.test.tsx) | ????????/defaults, malformed JSON, callback ?????????? ? storage errors |
-| [src/editors/tiptap/TiptapEditor.tsx](../../src/editors/tiptap/TiptapEditor.tsx) | [TiptapEditor.test.tsx](../../src/editors/tiptap/TiptapEditor.test.tsx) | onEditorReady/cleanup, bubble predicate, edit/save/remount/restore ? ???????? Editor |
+| [src/editors/tiptap/EditorHistoryActions.tsx](../../src/editors/tiptap/EditorHistoryActions.tsx) | [EditorHistoryActions.test.tsx](../../src/editors/tiptap/EditorHistoryActions.test.tsx) | Undo/redo, доступность кнопок и замена editor |
+| [src/editors/tiptap/TiptapEditor.tsx](../../src/editors/tiptap/TiptapEditor.tsx) | [TiptapEditor.test.tsx](../../src/editors/tiptap/TiptapEditor.test.tsx) | `initialBlocks`, `onChange`, bubble predicate и cleanup Editor |
 | [src/editors/tiptap/blocks/heading/Heading.ts](../../src/editors/tiptap/blocks/heading/Heading.ts) | [Heading.test.ts](../../src/editors/tiptap/blocks/heading/Heading.test.ts) | ????? ???????, shortcuts, HTML ? ???????????? allowed/default levels |
 | [src/editors/tiptap/blocks/heading/heading-enter.ts](../../src/editors/tiptap/blocks/heading/heading-enter.ts) | [heading-enter.test.ts](../../src/editors/tiptap/blocks/heading/heading-enter.test.ts) | ??????/????????/?????, selection, children, nested lift ? history |
 | [src/editors/tiptap/blocks/list-types/BulletListItem.ts](../../src/editors/tiptap/blocks/list-types/BulletListItem.ts) | [BulletListItem.test.ts](../../src/editors/tiptap/blocks/list-types/BulletListItem.test.ts) | Shortcut, HTML metadata ? ????????? ??????? ????? StarterKit |
@@ -87,7 +86,6 @@ jsdom не проверяет нативный drag, реальную IME, ви�
 | [src/editors/tiptap/schema/BlockGroup.ts](../../src/editors/tiptap/schema/BlockGroup.ts) | [BlockGroup.test.ts](../../src/editors/tiptap/schema/BlockGroup.test.ts) | ????????? ??????, HTML ? ?????? ?????? ?????? |
 | [src/editors/tiptap/serialization/blocks.ts](../../src/editors/tiptap/serialization/blocks.ts) | [blocks.test.ts](../../src/editors/tiptap/serialization/blocks.test.ts) | ??? ????? ?????, props, children, ????????????? ID ? fallback levels |
 | [src/editors/tiptap/serialization/inline.ts](../../src/editors/tiptap/serialization/inline.ts) | [inline.test.ts](../../src/editors/tiptap/serialization/inline.test.ts) | ??? marks, links, ??????????? ??????, ??????? ? ????????????? ?? ??????? marks |
-| [src/editors/tiptap/storage.ts](../../src/editors/tiptap/storage.ts) | [storage.test.ts](../../src/editors/tiptap/storage.test.ts) | ????????????? ????, malformed JSON, storage errors, ????????? JSON ? ?????????? ID |
 | [src/editors/tiptap/toolbar/AlignmentButtons.tsx](../../src/editors/tiptap/toolbar/AlignmentButtons.tsx) | [AlignmentButtons.test.tsx](../../src/editors/tiptap/toolbar/AlignmentButtons.test.tsx) | ??????? left/center/right ?? props ?????????? |
 | [src/editors/tiptap/toolbar/BlockTypeSelect.tsx](../../src/editors/tiptap/toolbar/BlockTypeSelect.tsx) | [BlockTypeSelect.test.tsx](../../src/editors/tiptap/toolbar/BlockTypeSelect.test.tsx) | ???????? ???????? ? ?????????? heading; ????????? Portal |
 | [src/editors/tiptap/toolbar/ColorStyleButton.tsx](../../src/editors/tiptap/toolbar/ColorStyleButton.tsx) | [ColorStyleButton.test.tsx](../../src/editors/tiptap/toolbar/ColorStyleButton.test.tsx) | ??????????/????? ????? ?????? ? ????; ????????? Portal |

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { expect, test } from 'vitest'
-import { act, fireEvent, render, screen, waitFor } from '../test/react'
-import { createEditor } from '../test/create-editor'
+import { act, fireEvent, render, screen, waitFor } from '../../test/react'
+import { createEditor } from '../../test/create-editor'
 import { EditorHistoryActions } from './EditorHistoryActions'
 
 test('updates undo/redo availability and responds to editor replacement', async () => {

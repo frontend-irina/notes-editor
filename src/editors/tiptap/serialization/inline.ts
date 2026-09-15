@@ -39,7 +39,7 @@ function marksToStyles(marks: readonly JSONContent[] = []): TextStyles {
   return styles
 }
 
-export function tiptapInlineToBlockNote(nodes: readonly JSONContent[] = []): InlineContent[] {
+export function tiptapToInline(nodes: readonly JSONContent[] = []): InlineContent[] {
   const result: InlineContent[] = []
 
   for (const node of nodes) {

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { blockToTiptap, tiptapBlockToBlockNote } from './blocks'
+import { blockToTiptap, tiptapToBlock } from './blocks'
 import { defaultBlockProps, type Block } from '../types'
 
 test.each(['paragraph', 'heading', 'quote', 'bulletListItem', 'numberedListItem', 'checkListItem'] as const)(
@@ -14,7 +14,7 @@ test.each(['paragraph', 'heading', 'quote', 'bulletListItem', 'numberedListItem'
     const internal = { type: 'blockContainer', attrs: { ...defaultBlockProps, ...props, id: 'parent' },
       content: [{ type, attrs, content: [{ type: 'text', text: 'hello', marks: [{ type: 'bold' }] }] }] }
     expect(blockToTiptap(publicBlock)).toEqual(internal)
-    expect(tiptapBlockToBlockNote(internal)).toEqual(publicBlock)
+    expect(tiptapToBlock(internal)).toEqual(publicBlock)
   },
 )
 
@@ -27,14 +27,14 @@ test('preserves nested blocks and generates missing IDs', () => {
     type: 'blockContainer', attrs: { ...defaultBlockProps, id: 'child' },
     content: [{ type: 'paragraph', attrs: undefined, content: [] }],
   }] })
-  expect(tiptapBlockToBlockNote(result).children).toEqual([child])
+  expect(tiptapToBlock(result).children).toEqual([child])
 })
 
 test('uses documented defaults for missing content and invalid heading levels', () => {
-  expect(tiptapBlockToBlockNote({ attrs: { id: 'empty' } })).toEqual({
+  expect(tiptapToBlock({ attrs: { id: 'empty' } })).toEqual({
     id: 'empty', type: 'paragraph', props: defaultBlockProps, content: [], children: [],
   })
-  expect(tiptapBlockToBlockNote({ content: [{ type: 'heading', attrs: { level: 99 } }] }).props)
+  expect(tiptapToBlock({ content: [{ type: 'heading', attrs: { level: 99 } }] }).props)
     .toEqual({ ...defaultBlockProps, level: 1 })
-  expect(tiptapBlockToBlockNote({ content: [{ type: 'numberedListItem' }] }).props).toEqual(defaultBlockProps)
+  expect(tiptapToBlock({ content: [{ type: 'numberedListItem' }] }).props).toEqual(defaultBlockProps)
 })

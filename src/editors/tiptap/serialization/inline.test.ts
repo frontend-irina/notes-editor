@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { inlineToTiptap, tiptapInlineToBlockNote } from './inline'
+import { inlineToTiptap, tiptapToInline } from './inline'
 
 test('serializes all styles and link segments without empty text', () => {
   expect(inlineToTiptap([
@@ -24,7 +24,7 @@ test('serializes all styles and link segments without empty text', () => {
 })
 
 test('restores every style independently from explicit marks', () => {
-  expect(tiptapInlineToBlockNote([{ type: 'text', text: 'x', marks: [
+  expect(tiptapToInline([{ type: 'text', text: 'x', marks: [
     { type: 'bold' }, { type: 'italic' }, { type: 'underline' },
     { type: 'strike' }, { type: 'code' },
     { type: 'textColor', attrs: { color: 'blue' } },
@@ -36,7 +36,7 @@ test('restores every style independently from explicit marks', () => {
 })
 
 test('coalesces compatible text, preserving whitespace and style boundaries', () => {
-  expect(tiptapInlineToBlockNote([
+  expect(tiptapToInline([
     { type: 'text', text: 'hello' }, { type: 'text', text: ' ' },
     { type: 'text', text: 'world', marks: [{ type: 'bold' }] },
     { type: 'text', text: '' }, { type: 'unknown' },
@@ -44,11 +44,11 @@ test('coalesces compatible text, preserving whitespace and style boundaries', ()
     { type: 'text', text: 'hello ', styles: {} },
     { type: 'text', text: 'world', styles: { bold: true } },
   ])
-  expect(tiptapInlineToBlockNote()).toEqual([])
+  expect(tiptapToInline()).toEqual([])
 })
 
 test('groups adjacent link segments by href without losing their styles', () => {
-  expect(tiptapInlineToBlockNote([
+  expect(tiptapToInline([
     { type: 'text', text: 'a', marks: [{ type: 'link', attrs: { href: '/one' } }] },
     { type: 'text', text: 'b', marks: [{ type: 'bold' }, { type: 'link', attrs: { href: '/one' } }] },
     { type: 'text', text: 'c', marks: [{ type: 'link', attrs: { href: '/two' } }] },
@@ -63,7 +63,7 @@ test('groups adjacent link segments by href without losing their styles', () => 
 
 test('normalizes the same style set regardless of mark order', () => {
   // docs/editor/inline-content.md: adjacent equal style sets become one fragment.
-  expect(tiptapInlineToBlockNote([
+  expect(tiptapToInline([
     { type: 'text', text: 'a', marks: [{ type: 'bold' }, { type: 'italic' }] },
     { type: 'text', text: 'b', marks: [{ type: 'italic' }, { type: 'bold' }] },
   ])).toEqual([{ type: 'text', text: 'ab', styles: { bold: true, italic: true } }])

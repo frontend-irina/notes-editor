@@ -3,12 +3,14 @@ import { useRef, useState, type MouseEvent } from 'react'
 import type { SelectableBlockType, SelectedBlockType } from './types'
 
 export function useBlockTypeSelect(editor: Editor, selectedType: SelectedBlockType) {
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  const [anchorPosition, setAnchorPosition] = useState<{ top: number; left: number } | null>(null)
+  const [menuContainer, setMenuContainer] = useState<HTMLElement | null>(null)
   const selection = useRef<{ from: number; to: number } | null>(null)
 
   const setBlockType = (type: SelectableBlockType) => {
     if (selectedType === type) {
-      setAnchor(null)
+      setAnchorPosition(null)
+      setMenuContainer(null)
       return
     }
 
@@ -21,17 +23,23 @@ export function useBlockTypeSelect(editor: Editor, selectedType: SelectedBlockTy
     }
     if (type === 'quote') chain.updateAttributes('blockContainer', { textAlignment: 'left' })
     chain.run()
-    setAnchor(null)
+    setAnchorPosition(null)
+    setMenuContainer(null)
   }
 
   const openMenu = (event: MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
     selection.current = {
       from: editor.state.selection.from,
       to: editor.state.selection.to,
     }
-    setAnchor(event.currentTarget)
+    setAnchorPosition({ top: rect.bottom, left: rect.left })
+    setMenuContainer(event.currentTarget.closest('.tiptap-toolbar-layer')?.parentElement ?? null)
   }
 
-  const closeMenu = () => setAnchor(null)
-  return { anchor, openMenu, closeMenu, setBlockType }
+  const closeMenu = () => {
+    setAnchorPosition(null)
+    setMenuContainer(null)
+  }
+  return { anchorPosition, menuContainer, openMenu, closeMenu, setBlockType }
 }

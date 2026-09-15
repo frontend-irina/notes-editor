@@ -13,25 +13,32 @@ vi.mock('@tiptap/react/menus', () => ({
   },
 }))
 
-test('edits, persists and restores public data with lifecycle notifications', async () => {
-  let editor: Editor | null = null
-  const ready = vi.fn((value: Editor | null) => { editor = value })
-  const mounted = render(<TiptapEditor onEditorReady={ready} />)
-  await waitFor(() => expect(editor).not.toBeNull())
-  expect(bubble.shouldShow?.({ state: editor!.state })).toBe(false)
-  act(() => { editor!.commands.insertContent('persisted') })
-  const id = editor!.state.doc.firstChild?.attrs.id
-  act(() => { editor!.commands.setTextSelection({ from: 2, to: 5 }) })
-  expect(bubble.shouldShow?.({ state: editor!.state })).toBe(true)
-  expect(JSON.parse(localStorage.getItem('editor-playground:tiptap-blocks')!)[0]).toMatchObject({
-    id, type: 'paragraph', content: [{ type: 'text', text: 'persisted', styles: {} }],
+test('loads initial blocks and emits public data with lifecycle notifications', async () => {
+  const changed = vi.fn()
+  const mounted = render(<TiptapEditor
+    initialBlocks={[{
+      id: 'initial',
+      type: 'paragraph',
+      props: { backgroundColor: 'default', textColor: 'default', textAlignment: 'left' },
+      content: [{ type: 'text', text: 'initial', styles: {} }],
+      children: [],
+    }]}
+    onChange={changed}
+  />)
+  let editor: Editor | undefined
+  await waitFor(() => {
+    editor = (mounted.container.querySelector('.tiptap') as HTMLElement & { editor?: Editor })?.editor
+    expect(editor).toBeDefined()
   })
-  const first = editor!
+  const activeEditor = editor!
+  expect(activeEditor.state.doc.textContent).toBe('initial')
+  expect(bubble.shouldShow?.({ state: activeEditor.state })).toBe(false)
+  act(() => { activeEditor.commands.focus('end'); activeEditor.commands.insertContent(' updated') })
+  act(() => { activeEditor.commands.setTextSelection({ from: 2, to: 5 }) })
+  expect(bubble.shouldShow?.({ state: activeEditor.state })).toBe(true)
+  expect(changed.mock.lastCall?.[0][0]).toMatchObject({
+    id: 'initial', type: 'paragraph', content: [{ type: 'text', text: 'initial updated', styles: {} }],
+  })
   mounted.unmount()
-  expect(ready).toHaveBeenLastCalledWith(null)
-  await waitFor(() => expect(first.isDestroyed).toBe(true))
-  render(<TiptapEditor onEditorReady={ready} />)
-  await waitFor(() => expect(editor?.state.doc.textContent).toBe('persisted'))
-  expect(editor!.state.doc.firstChild?.attrs.id).toBe(id)
+  await waitFor(() => expect(activeEditor.isDestroyed).toBe(true))
 })
-

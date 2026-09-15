@@ -12,7 +12,7 @@ export const BulletListItem = Node.create({
   renderHTML: ({ HTMLAttributes }) => [
     'div',
     { ...HTMLAttributes, 'data-list-type': 'bullet', class: 'tiptap-list-item' },
-    0,
+    ['span', { class: 'tiptap-list-item-content' }, 0],
   ],
 
   addInputRules() {

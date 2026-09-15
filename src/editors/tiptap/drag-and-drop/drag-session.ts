@@ -3,7 +3,7 @@ import type { ActiveDrag, BlockRange } from './types'
 import { selectedBlockRange } from './block-range'
 import { createPreview, serializeRange } from './drag-transfer'
 
-const internalMimeType = 'blocknote/html'
+const internalMimeType = 'application/x-tiptap-blocks+html'
 // Shared across editor instances to preserve cross-editor moves.
 let activeDrag: ActiveDrag | null = null
 

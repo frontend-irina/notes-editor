@@ -16,7 +16,7 @@ export function EditorHistoryActions({ editor }: EditorHistoryActionsProps) {
 
   return (
     <Box
-      className="tabs-history-actions"
+      className="tiptap-history-actions"
       aria-label="История изменений Tiptap"
     >
       <Tooltip title="Отменить">

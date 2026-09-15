@@ -1,120 +1,74 @@
-# Notes Editor
+# Tiptap Block Editor
 
-Экспериментальный блочный редактор на React, в котором поведение
-[BlockNote](https://www.blocknotejs.org/) воспроизводится поверх
-[Tiptap](https://tiptap.dev/). Оба редактора доступны на одной странице, поэтому
-их поведение можно сравнивать напрямую.
+Блочный React-редактор на Tiptap с панелью форматирования, меню блоков,
+drag-and-drop и встроенными кнопками отмены и повтора действий.
 
-> Проект находится в разработке. Backend пока не используется: документы
-> сохраняются локально в браузере.
+## Установка
+
+```bash
+npm install @frontend-irina/tiptap-block-editor
+```
+
+## Использование
+
+```tsx
+import { TiptapEditor, type Block } from '@frontend-irina/tiptap-block-editor'
+import '@frontend-irina/tiptap-block-editor/style.css'
+
+const initialBlocks: Block[] = [{
+  id: 'welcome',
+  type: 'paragraph',
+  props: {
+    backgroundColor: 'default',
+    textColor: 'default',
+    textAlignment: 'left',
+  },
+  content: [{ type: 'text', text: 'Начните писать...', styles: {} }],
+  children: [],
+}]
+
+export function Editor() {
+  return (
+    <TiptapEditor
+      initialBlocks={initialBlocks}
+      onChange={(blocks) => console.log(blocks)}
+    />
+  )
+}
+```
+
+`initialBlocks` используется при создании редактора. Актуальное содержимое
+передаётся в `onChange`; сохранением на сервере или в `localStorage` управляет
+приложение-потребитель. Если `initialBlocks` отсутствует или пуст, редактор
+создаёт один пустой paragraph.
 
 ## Возможности
 
-- переключение между эталонным BlockNote и собственной реализацией на Tiptap;
-- независимое автосохранение содержимого каждого редактора в `localStorage`;
-- блочная модель с уникальными UUID v7 и вложенными блоками;
-- блоки Paragraph, Heading уровней 1–6 и Quote;
-- выбор типа блока через toolbar;
-- полужирный, курсивный, подчёркнутый и зачёркнутый текст;
-- ссылки, цвет текста и цвет фона;
-- выравнивание текста по левому краю, центру и правому краю;
-- отмена и повтор действий для Tiptap;
-- сериализация между публичной блочной моделью и внутренним документом Tiptap.
+- блочная модель с UUID v7 и вложенными блоками;
+- Paragraph, Heading уровней 1–6, Quote и элементы списков;
+- форматирование текста, ссылки, цвета и выравнивание;
+- меню добавления и преобразования блоков;
+- drag-and-drop блоков;
+- встроенные undo и redo;
+- сериализация между публичной моделью `Block[]` и Tiptap.
 
-## Технологии
-
-- React 19 и TypeScript 6;
-- Vite 8;
-- Tiptap 3 и ProseMirror;
-- BlockNote 0.54;
-- Material UI и Mantine;
-- Oxlint.
-
-## Запуск проекта
-
-Требуется актуальная LTS-версия Node.js и npm.
+## Локальная разработка
 
 ```bash
-git clone git@github.com:frontend-irina/notes-editor.git
-cd notes-editor
 npm install
 npm run dev
 ```
 
-После запуска откройте адрес, указанный Vite в терминале (обычно
-`http://localhost:5173`).
-
-## Команды
-
-```bash
-npm run dev      # локальная разработка
-npm run build    # проверка TypeScript и production-сборка
-npm run lint     # статический анализ
-npm run preview  # просмотр production-сборки
-npm test         # все Vitest-тесты без watch
-npm run test:watch     # повторный запуск при изменениях
-npm run test:types     # типизация тестов и конфигурации
-npm run test:coverage  # покрытие V8, HTML-отчёт в coverage/
-```
-
-Тесты находятся рядом с модулями (`*.test.ts`, `*.test.tsx`). Матрица сценариев,
-общие fixtures и ограничения jsdom описаны в [руководстве по тестированию](docs/architecture/testing.md).
-
-## Хранение данных
-
-На текущем этапе серверной части нет. Редакторы используют разные ключи
-`localStorage`:
-
-| Редактор | Ключ |
-| --- | --- |
-| BlockNote | `editor-playground:blocknote` |
-| Tiptap | `editor-playground:tiptap-blocks` |
-
-Tiptap сохраняет публичный массив блоков, а не внутренний JSON ProseMirror.
-Очистка данных сайта в браузере удалит сохранённые документы.
-
-## Структура
-
-```text
-src/
-├── App.tsx                       # вкладки редакторов и undo/redo
-└── editors/
-    ├── BlockNoteEditor.tsx       # эталонный редактор
-    └── tiptap/
-        ├── TiptapEditor.tsx      # React-интеграция Tiptap
-        ├── toolbar/             # панель форматирования и её элементы
-        ├── blocks/               # реализации типов блоков
-        ├── editor-extensions.ts  # сборка расширений
-        ├── schema/               # структурная схема ProseMirror
-        ├── extensions/           # общие инварианты и shortcuts
-        ├── serialization.ts      # публичная модель ↔ Tiptap JSON
-        └── storage.ts            # работа с localStorage
-
-docs/
-├── architecture/project.md       # архитектура и соглашения проекта
-└── editor/                       # спецификации поведения редактора
-```
-
-## Документация
-
-- [OpenSpec: процесс работы с изменениями](docs/architecture/openspec.md)
-- [Архитектура и Code Style](docs/architecture/project.md)
-- [Toolbar](docs/editor/toolbar.md)
-- [Paragraph](docs/editor/blocks/paragraph/paragraph.md)
-- [Heading](docs/editor/blocks/heading/heading.md)
-- [Quote](docs/editor/blocks/quote/quote.md)
-- [List types](docs/editor/blocks/list-types/list-types.md)
-- [Markdown](docs/editor/markdown.md)
-- [HTML](docs/editor/html.md)
-
-## Проверка изменений
-
-Перед публикацией изменений выполните:
+## Проверки
 
 ```bash
 npm run lint
+npm test
+npm run test:types
 npm run build
+npm pack --dry-run
 ```
 
-Для изменений поведения редактора также проверьте вручную редактирование,
-сохранение после перезагрузки страницы и undo/redo в обоих режимах.
+Документация в [`docs/`](docs/) использует BlockNote только как reference для
+описания модели и ожидаемого поведения. BlockNote не входит в runtime или
+зависимости пакета.
