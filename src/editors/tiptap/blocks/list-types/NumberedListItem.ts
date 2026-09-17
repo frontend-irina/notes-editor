@@ -32,7 +32,7 @@ export const NumberedListItem = Node.create({
         ...(start !== null ? { style: `counter-set: tiptap-numbered-list ${start - 1}` } : {}),
         class: 'tiptap-list-item',
       },
-      0,
+      ['span', { class: 'tiptap-list-item-content' }, 0],
     ]
   },
 

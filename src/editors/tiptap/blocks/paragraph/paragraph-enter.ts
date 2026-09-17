@@ -39,7 +39,7 @@ export function handleParagraphEnter(editor: Editor, type: NodeType) {
   const childGroup = block.childCount > 1 ? block.child(1) : null
   const blockType = state.schema.nodes.blockContainer
 
-  // BlockNote preserves compatible props for a split at the beginning.
+  // A split at the beginning preserves compatible block properties.
   // Other newly-created paragraphs receive the schema defaults.
   const nextAttributes = fromOffset === 0 && !isEmpty
     ? { ...block.attrs, id: uuidV7() }

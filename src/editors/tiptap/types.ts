@@ -1,6 +1,8 @@
 export type TextAlignment = 'left' | 'center' | 'right' | 'justify'
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 
+export const MAX_BLOCK_DEPTH = 5
+
 export type TextStyles = Partial<{
   bold: boolean
   italic: boolean
@@ -32,6 +34,22 @@ export type Block =
   | BulletListItemBlock
   | NumberedListItemBlock
   | CheckListItemBlock
+
+export type BlockPosition = {
+  before: string | null
+  after: string | null
+}
+
+type FlatBlockVariant<T extends Block> = Omit<T, 'children'> & {
+  parentId: string | null
+  position: BlockPosition
+}
+
+export type FlatBlock = Block extends infer T
+  ? T extends Block
+    ? FlatBlockVariant<T>
+    : never
+  : never
 
 export type ParagraphBlock = {
   id: string

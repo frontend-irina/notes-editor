@@ -12,8 +12,10 @@ import { BlockIds } from './extensions/BlockIds'
 import { BlockBehavior } from './extensions/BlockBehavior'
 import { TextColor } from './marks/TextColor'
 import { BackgroundColor } from './marks/BackgroundColor'
+import { PasteDepthLimit } from './extensions/PasteDepthLimit'
+import { BlockPlaceholder } from './extensions/BlockPlaceholder'
 
-export function createEditorExtensions() {
+export function createEditorExtensions(options: { placeholder?: string } = {}) {
   return [
     StarterKit.configure({
       document: false,
@@ -32,6 +34,8 @@ export function createEditorExtensions() {
     CheckListItem,
     BlockIds,
     BlockBehavior,
+    BlockPlaceholder.configure({ placeholder: options.placeholder ?? 'Начните писать...' }),
+    PasteDepthLimit,
     DragAndDrop,
     BlockMenu,
     TextColor,

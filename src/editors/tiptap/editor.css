@@ -1,8 +1,28 @@
+.tiptap-editor {
+  overflow: hidden;
+  border: 1px solid #e1e4ed;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.tiptap-editor-header {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 6px 10px;
+  border-bottom: 1px solid #e1e4ed;
+  background: #fbfbfd;
+}
+
+.tiptap-history-actions {
+  display: flex;
+  gap: 3px;
+}
+
 .tiptap-shell {
   overflow: hidden;
   min-height: 390px;
-  border: 1px solid #e1e4ed;
-  border-radius: 10px;
 }
 
 .tiptap {
@@ -13,6 +33,24 @@
 }
 
 .tiptap > :first-child { margin-top: 0; }
+/* Give the native caret a layout box in empty text blocks. */
+.tiptap-shell .ProseMirror-trailingBreak:only-child {
+  display: inline-block;
+}
+
+.tiptap-empty-block::before {
+  display: none;
+  height: 0;
+  float: left;
+  color: #8a8e9d;
+  content: attr(data-placeholder);
+  pointer-events: none;
+}
+
+.tiptap:focus .tiptap-empty-block::before {
+  display: block;
+}
+
 .tiptap .tiptap-block {
   --tiptap-first-line-height: 27.2px;
   position: relative;

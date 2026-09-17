@@ -57,3 +57,13 @@ export function unnestEmptyBlock(transaction: Transaction) {
   if ($from.node(range.depth - 1).type.name !== 'blockContainer') return false
   return liftToOuterGroup(transaction, range)
 }
+
+export function unnestBlock(transaction: Transaction) {
+  const { $from, $to } = transaction.selection
+  const range = $from.blockRange(
+    $to,
+    (node) => node.childCount > 0 && node.type.name === 'blockGroup',
+  )
+  if (!range || $from.node(range.depth - 1).type.name !== 'blockContainer') return false
+  return liftToOuterGroup(transaction, range)
+}

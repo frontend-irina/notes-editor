@@ -10,9 +10,8 @@
 - TypeScript 6;
 - Vite 8;
 - Tiptap 3 и ProseMirror — основа разрабатываемого редактора;
-- BlockNote 0.54 — эталон поведения;
+- документация BlockNote — reference для модели и поведения, без runtime-зависимости;
 - Material UI — оболочка приложения и toolbar Tiptap;
-- Mantine — UI-адаптер эталонного BlockNote;
 - Oxlint — статический анализ;
 - Vitest, jsdom и React Testing Library — проверки модулей и интеграции;
 - npm и `package-lock.json` — управление зависимостями.
@@ -24,21 +23,18 @@
 ```text
 src/
   main.tsx                     # точка входа React
-  App.tsx                      # оболочка и переключение редакторов
+  App.tsx                      # локальный пример использования пакета
   App.css                      # стили оболочки
   index.css                    # глобальные стили
   app/
-    theme.ts                   # тема MUI
-    EditorHistoryActions.tsx   # кнопки и подписка undo/redo
+    theme.ts                   # тема MUI локального примера
   editors/
-    BlockNoteEditor.tsx         # эталонная реализация
-    blocknote-editor.css
     tiptap/
-      TiptapEditor.tsx          # React lifecycle, storage, подключение UI
+      TiptapEditor.tsx          # публичный React-компонент и lifecycle
+      EditorHistoryActions.tsx  # кнопки и подписка undo/redo
       editor-extensions.ts     # сборка конфигурации extensions
       editor.css
       types.ts                 # публичная модель
-      storage.ts               # адаптер localStorage
       uuid.ts
       schema/                  # BlockDocument, BlockContainer, BlockGroup
       marks/                   # TextColor, BackgroundColor
@@ -60,22 +56,14 @@ docs/
   architecture/                # технические решения и соглашения
 ```
 
-`BlockNoteEditor` и `TiptapEditor` сохраняют документы независимо и используют разные ключи `localStorage`.
+## Публичный компонент
 
-## Архитектурные роли редакторов
-
-### BlockNoteEditor
-
-- Служит интерактивным эталоном для сравнения поведения.
-- Использует стандартную схему BlockNote.
-- Сохраняет `editor.document` без преобразования.
-- Не должен становиться зависимостью внутренней реализации Tiptap-редактора.
-
-### TiptapEditor
-
-- Реализует BlockNote-подобную модель поверх Tiptap/ProseMirror.
+- `TiptapEditor` является единственным публичным React-компонентом пакета.
+- Компонент содержит редактор, formatting toolbar, меню блоков и кнопки undo/redo.
+- `initialBlocks` задаёт начальный документ при создании экземпляра.
+- `onChange` получает актуальный публичный массив `Block[]` после изменений.
 - Не должен отдавать наружу внутренний Tiptap JSON как публичный формат документа.
-- Преобразует публичную блочную модель во внутреннюю схему Tiptap при загрузке и обратно при сохранении.
+- Преобразует публичную блочную модель во внутреннюю схему Tiptap при инициализации и обратно для `onChange`.
 - Расширения Tiptap отвечают за структуру узлов, marks, команды и обеспечение инвариантов.
 
 ## Слои данных
@@ -151,14 +139,12 @@ doc
 
 ## Хранение состояния
 
-На текущем этапе используется браузерный `localStorage`:
-
-- BlockNote: `editor-playground:blocknote`;
-- Tiptap: `editor-playground:tiptap-blocks`.
-
-В хранилище Tiptap должен записываться массив публичных блоков, а не `editor.getJSON()` без преобразования. Ошибка чтения, повреждённый JSON или недоступность хранилища не должны блокировать запуск редактора: используется начальный документ.
-
-`localStorage` является инфраструктурой демонстрационного приложения, а не целевым persistence API библиотеки.
+Компонент не выбирает ключ и расписание сохранения: приложение-потребитель
+передаёт данные через `initialBlocks` и получает изменения через `onChange`.
+Пакет экспортирует чистые persistence-адаптеры. Backend использует плоский
+`FlatBlock[]` с `parentId` и соседними ссылками, а `localStorage` — публичный
+nested `Block[]`. Полный контракт, валидация и предел глубины описаны в
+[children.md](../editor/children.md).
 
 ## Code Style
 
@@ -212,9 +198,10 @@ doc
 ### CSS
 
 - Глобальные reset и базовые правила размещаются в `index.css`.
-- `App.css` содержит оболочку; `blocknote-editor.css` — эталонный редактор; `tiptap/editor.css` — базовые блоки и оболочку Tiptap. Стили списков, drag-and-drop, меню и toolbar находятся рядом с соответствующими модулями.
+- `App.css` содержит локальный пример; `tiptap/editor.css` — базовые блоки и оболочку Tiptap. Стили списков, drag-and-drop, меню и toolbar находятся рядом с соответствующими модулями.
 - CSS подключается один раз владельцем или компонентом композиции редактора. Media queries располагаются вместе с правилами своих компонентов. Селекторы ограничиваются классами редактора (`.tiptap*`, `.bn-*`).
 - Общая переменная `--tiptap-first-line-height` задаётся в `editor.css` и используется боковыми кнопками.
+- Содержимое элементов списка находится в `.tiptap-list-item-content`, отдельно от маркера или checkbox: тексту нужен собственный строчный контекст внутри flex-контейнера. Служебный `.ProseMirror-trailingBreak:only-child` отображается как `inline-block`, чтобы браузер рисовал нативную каретку в пустом блоке; символы-заполнители в документ не добавляются.
 - Не использовать общие селекторы, способные изменить поведение обоих редакторов случайно.
 - Сохранять доступный focus state и адаптивность для узких экранов.
 - Значения block props должны задаваться через schema/rendering, а не через позиционные CSS-селекторы.
@@ -225,7 +212,7 @@ doc
 
 `schema` описывает структурный каркас, `marks` — inline-оформление, `extensions` — общие инварианты и поведение. `BlockBehavior` сохраняет приоритет 1000 и подключает обработчик цитаты из `blocks/quote/quote-enter.ts`. Фабрика `createEditorExtensions` сохраняет порядок регистрации и настройки StarterKit.
 
-`serialization/blocks.ts` использует чистые inline-преобразования из `inline.ts`; внешний `index.ts` экспортирует блочные точки входа для storage. Сериализация и schema не зависят от React, DOM или localStorage.
+`serialization/blocks.ts` использует чистые inline-преобразования из `inline.ts`. Сериализация и schema не зависят от React, DOM или способа хранения данных.
 
 ### Владельцы состояния
 

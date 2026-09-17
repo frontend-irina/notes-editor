@@ -23,6 +23,7 @@ BlockNote в приложении используется как эталон �
 ### Спецификации редактора
 
 - [Идентификатор блока](./editor/block-id.md) — блочная модель, UUID v7, уникальность, стабильность ID, импорт и копирование блоков.
+- [Children, вложенность и persistence](./editor/children.md) — предел глубины, нормализация paste, nested localStorage и плоский backend-контракт.
 - [Блок Paragraph](./editor/blocks/paragraph/paragraph.md) — модель paragraph, стандартные props, создание, редактирование и критерии приёмки.
   - [Markdown для Paragraph](./editor/blocks/paragraph/markdown.md) — импорт, экспорт, потери и round trip Paragraph в Markdown.
   - [HTML для Paragraph](./editor/blocks/paragraph/html.md) — импорт и экспорт Paragraph в полном и interoperable HTML.
@@ -78,6 +79,7 @@ BlockNote в приложении используется как эталон �
 Документированы:
 
 - общая форма блока и требования к его ID;
+- единые правила children, максимальной глубины и tree/flat persistence;
 - блок `paragraph`;
 - блок `heading`, включая конфигурацию уровней, Markdown и HTML;
 - блок `quote`;

@@ -1,40 +1,68 @@
 {
-  "name": "blocknote--tiptap",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@frontend-irina/tiptap-block-editor",
+  "version": "0.1.0",
+  "description": "Block-based Tiptap editor for React",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": {
+      "types": "./dist/style.d.ts",
+      "default": "./dist/style.css"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frontend-irina/notes-editor.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && tsc --project tsconfig.lib.json && cp src/style.d.ts dist/style.d.ts",
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:types": "tsc --project tsconfig.test.json"
+    "test:types": "tsc --project tsconfig.test.json",
+    "prepublishOnly": "npm run lint && npm test && npm run test:types && npm run build"
   },
-  "dependencies": {
-    "@blocknote/core": "^0.54.0",
-    "@blocknote/mantine": "^0.54.0",
-    "@blocknote/react": "^0.54.0",
+  "peerDependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mantine/core": "^9.6.0",
-    "@mantine/hooks": "^9.6.0",
-    "@mantine/utils": "^6.0.22",
+    "@floating-ui/dom": "^1.8.0",
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.4.0",
     "@tiptap/core": "^3.31.3",
     "@tiptap/pm": "^3.31.3",
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@floating-ui/dom": "^1.8.0",
+    "@mui/icons-material": "^9.4.0",
+    "@mui/material": "^9.4.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
+    "@tiptap/core": "^3.31.3",
+    "@tiptap/pm": "^3.31.3",
+    "@tiptap/react": "^3.31.3",
+    "@tiptap/starter-kit": "^3.31.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
@@ -42,6 +70,8 @@
     "@vitest/coverage-v8": "^5.0.0",
     "jsdom": "^29.1.1",
     "oxlint": "^1.79.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "typescript": "~6.0.2",
     "vite": "^8.2.2",
     "vitest": "^5.0.0"

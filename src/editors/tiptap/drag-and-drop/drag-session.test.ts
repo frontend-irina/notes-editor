@@ -12,7 +12,7 @@ test('owns shared session, MIME payload and preview cleanup', () => {
   expect(drag.source).toBe(editor.view)
   expect(drag.preview?.isConnected).toBe(true)
   expect(transfer.effectAllowed).toBe('move')
-  expect(transfer.getData('blocknote/html')).toBe(transfer.getData('text/html'))
+  expect(transfer.getData('application/x-tiptap-blocks+html')).toBe(transfer.getData('text/html'))
   expect(transfer.setDragImage).toHaveBeenCalledOnce()
   endDrag()
   expect(getActiveDrag()).toBeNull()

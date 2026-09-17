@@ -9,7 +9,7 @@ import {
   type TextAlignment,
 } from '../types'
 import { uuidV7 } from '../uuid'
-import { inlineToTiptap, tiptapInlineToBlockNote } from './inline'
+import { inlineToTiptap, tiptapToInline } from './inline'
 
 export function blockToTiptap(block: Block): JSONContent {
   const contentNodeType = block.type
@@ -36,7 +36,7 @@ export function blockToTiptap(block: Block): JSONContent {
   }
 }
 
-export function tiptapBlockToBlockNote(node: JSONContent): Block {
+export function tiptapToBlock(node: JSONContent): Block {
   const paragraph = node.content?.find((child) => child.type === 'paragraph')
   const heading = node.content?.find((child) => child.type === 'heading')
   const quote = node.content?.find((child) => child.type === 'quote')
@@ -52,8 +52,8 @@ export function tiptapBlockToBlockNote(node: JSONContent): Block {
     ?? paragraph
   const common = {
     id: String(node.attrs?.id ?? uuidV7()),
-    content: tiptapInlineToBlockNote(blockContent?.content),
-    children: (childGroup?.content ?? []).map(tiptapBlockToBlockNote),
+    content: tiptapToInline(blockContent?.content),
+    children: (childGroup?.content ?? []).map(tiptapToBlock),
   }
 
   if (quote) {

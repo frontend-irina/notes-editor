@@ -1,50 +1,7 @@
 .app-main {
-  height: 100dvh;
-}
-
-.editor-card {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
-  border: 1px solid #e1e4ed;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 16px 50px rgba(40, 45, 70, 0.08);
-}
-
-.tabs-bar {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  padding: 0 20px;
-  border-bottom: 1px solid #e8eaf0;
-  background: #fbfbfd;
-}
-
-.tabs-bar .MuiTabs-root {
-  flex: 1;
-}
-
-.tabs-history-actions {
-  display: flex;
-  flex-shrink: 0;
-  gap: 3px;
-  margin-left: 12px;
-}
-
-.editor-panel {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-  padding: 28px;
-}
-
-.editor-panel[hidden] {
-  display: none;
+  min-height: 100dvh;
 }
 
 @media (max-width: 600px) {
-  .editor-panel { padding: 12px; }
-  .tabs-bar { padding: 0 4px; }
+  .app-main { padding: 12px; }
 }

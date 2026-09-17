@@ -1,1 +1,1 @@
-export { blockToTiptap, tiptapBlockToBlockNote } from './blocks'
+export { blockToTiptap, tiptapToBlock } from './blocks'

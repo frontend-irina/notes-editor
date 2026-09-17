@@ -20,7 +20,7 @@ type BlockTypeSelectProps = {
 }
 
 export function BlockTypeSelect({ editor, selectedType }: BlockTypeSelectProps) {
-  const { anchor, openMenu, closeMenu, setBlockType } = useBlockTypeSelect(editor, selectedType)
+  const { anchorPosition, menuContainer, openMenu, closeMenu, setBlockType } = useBlockTypeSelect(editor, selectedType)
 
   return (
     <>
@@ -30,15 +30,17 @@ export function BlockTypeSelect({ editor, selectedType }: BlockTypeSelectProps) 
         startIcon={getBlockTypeIcon(selectedType)}
         aria-label={`Тип блока: ${getBlockTypeLabel(selectedType)}`}
         aria-haspopup="menu"
-        aria-expanded={Boolean(anchor)}
+        aria-expanded={Boolean(anchorPosition)}
         onMouseDown={(event) => event.preventDefault()}
         onClick={openMenu}
       >
         {getBlockTypeLabel(selectedType)}
       </Button>
       <Menu
-        anchorEl={anchor}
-        open={Boolean(anchor)}
+        anchorReference="anchorPosition"
+        anchorPosition={anchorPosition ?? undefined}
+        container={menuContainer}
+        open={Boolean(anchorPosition)}
         onClose={closeMenu}
         aria-label="Тип блока"
       >
