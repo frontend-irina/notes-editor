@@ -3,6 +3,17 @@ import { Slice } from '@tiptap/pm/model'
 import { dropPoint } from '@tiptap/pm/transform'
 import type { EditorView } from '@tiptap/pm/view'
 import { getActiveDrag } from './drag-session'
+import { MAX_BLOCK_DEPTH } from '../types'
+import { getNodeBlockDepth } from '../blocks/shared/block-position'
+
+function insertionDepth(view: EditorView, position: number) {
+  const $position = view.state.doc.resolve(position)
+  let depth = 1
+  for (let index = 0; index <= $position.depth; index += 1) {
+    if ($position.node(index).type.name === 'blockGroup') depth += 1
+  }
+  return depth
+}
 
 function sliceForView(view: EditorView) {
   const drag = getActiveDrag()
@@ -22,7 +33,12 @@ export function dropPosition(view: EditorView, event: DragEvent) {
   if (!slice) return null
   const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY })
   if (!coordinates) return null
-  return dropPoint(view.state.doc, coordinates.pos, slice)
+  const target = dropPoint(view.state.doc, coordinates.pos, slice)
+  if (target === null) return null
+  let relativeDepth = 0
+  slice.content.forEach(node => { relativeDepth = Math.max(relativeDepth, getNodeBlockDepth(node)) })
+  const resultingDepth = insertionDepth(view, target) + relativeDepth - 1
+  return resultingDepth <= MAX_BLOCK_DEPTH ? target : null
 }
 
 export function handleDrop(view: EditorView, event: DragEvent, clearDrag: (view: EditorView) => void) {

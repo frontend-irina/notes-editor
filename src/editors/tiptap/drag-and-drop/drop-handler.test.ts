@@ -65,3 +65,29 @@ test('recreates a complete subtree in the target schema without losing props or 
   expect(target.state.doc.child(1).type).toBe(target.schema.nodes.blockContainer)
   expect(source.state.doc.textContent).toBe('stay')
 })
+
+test('rejects a drop when the dragged subtree would exceed depth five', () => {
+  const source = createEditor(doc(
+    block('branch', 'branch', 'paragraph', [block('descendant', 'descendant')]),
+    block('stay', 'stay'),
+  ))
+  const target = createEditor(doc(block('level-1', '', 'paragraph', [
+    block('level-2', '', 'paragraph', [
+      block('level-3', '', 'paragraph', [
+        block('level-4', '', 'paragraph', [block('level-5', 'target')]),
+      ]),
+    ]),
+  ])))
+  let targetPosition = 0
+  target.state.doc.descendants((node, pos) => {
+    if (node.attrs.id === 'level-5') targetPosition = pos
+  })
+
+  const { event } = dragEvent()
+  startDrag(source.view, event, 'branch')
+  vi.spyOn(target.view, 'posAtCoords').mockReturnValue({ pos: targetPosition, inside: -1 })
+
+  expect(dropPosition(target.view, event)).toBeNull()
+  expect(handleDrop(target.view, event, endDrag)).toBe(false)
+  expect(source.state.doc.textContent).toBe('branchdescendantstay')
+})

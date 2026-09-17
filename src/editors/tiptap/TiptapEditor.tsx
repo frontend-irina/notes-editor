@@ -8,6 +8,7 @@ import { blockToTiptap, tiptapToBlock } from './serialization'
 import { TiptapToolbar } from './toolbar'
 import { defaultBlockProps, type Block } from './types'
 import { uuidV7 } from './uuid'
+import { normalizeBlockDepth } from './persistence'
 import './editor.css'
 import './blocks/list-types/list-types.css'
 import './drag-and-drop/drag-and-drop.css'
@@ -16,6 +17,7 @@ export type TiptapEditorProps = {
   initialBlocks?: Block[]
   onChange?: (blocks: Block[]) => void
   className?: string
+  placeholder?: string
 }
 
 function defaultBlocks(): Block[] {
@@ -32,12 +34,15 @@ export function TiptapEditor({
   initialBlocks,
   onChange,
   className,
+  placeholder = 'Начните писать...',
 }: TiptapEditorProps) {
   const editor = useEditor({
-    extensions: createEditorExtensions(),
+    extensions: createEditorExtensions({ placeholder }),
     content: {
       type: 'doc',
-      content: (initialBlocks?.length ? initialBlocks : defaultBlocks()).map(blockToTiptap),
+      content: normalizeBlockDepth(
+        initialBlocks?.length ? initialBlocks : defaultBlocks(),
+      ).map(blockToTiptap),
     },
     onUpdate: ({ editor: currentEditor }) => {
       const blocks = (currentEditor.getJSON().content ?? []).map(tiptapToBlock)

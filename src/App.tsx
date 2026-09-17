@@ -12,11 +12,7 @@ const initialBlocks: Block[] = [{
     textColor: 'default',
     textAlignment: 'left',
   },
-  content: [{
-    type: 'text',
-    text: 'Начните писать...',
-    styles: {},
-  }],
+  content: [],
   children: [],
 }]
 

@@ -32,6 +32,7 @@ export function Editor() {
     <TiptapEditor
       initialBlocks={initialBlocks}
       onChange={(blocks) => console.log(blocks)}
+      placeholder="Начните писать..."
     />
   )
 }
@@ -41,6 +42,10 @@ export function Editor() {
 передаётся в `onChange`; сохранением на сервере или в `localStorage` управляет
 приложение-потребитель. Если `initialBlocks` отсутствует или пуст, редактор
 создаёт один пустой paragraph.
+
+Пакет экспортирует `MAX_BLOCK_DEPTH`, `flattenBlocks`, `buildBlockTree`,
+`toBackendBlocks`, `fromBackendBlocks`, `diffFlatBlocks`, а также
+`readBlockTree`/`writeBlockTree` для nested JSON в `localStorage`.
 
 ## Возможности
 

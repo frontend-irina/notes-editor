@@ -18,3 +18,18 @@ test('quote shortcut preserves ID and text and Enter splits the quote', () => {
   expect(editor.state.doc.textContent).toBe('text')
 })
 
+test('nest and unnest shortcuts are atomic undoable operations', () => {
+  const editor = createEditor(doc(block('a'), block('b', 'text')), 6)
+
+  expect(editor.commands.keyboardShortcut('Tab')).toBe(true)
+  expect(editor.state.doc.firstChild?.lastChild?.firstChild?.attrs.id).toBe('b')
+  expect(editor.commands.undo()).toBe(true)
+  expect(editor.state.doc.childCount).toBe(2)
+  expect(editor.commands.redo()).toBe(true)
+  expect(editor.state.doc.childCount).toBe(1)
+
+  expect(editor.commands.keyboardShortcut('Shift-Tab')).toBe(true)
+  expect(editor.state.doc.childCount).toBe(2)
+  expect(editor.commands.undo()).toBe(true)
+  expect(editor.state.doc.childCount).toBe(1)
+})

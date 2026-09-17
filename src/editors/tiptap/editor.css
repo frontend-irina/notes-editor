@@ -38,6 +38,19 @@
   display: inline-block;
 }
 
+.tiptap-empty-block::before {
+  display: none;
+  height: 0;
+  float: left;
+  color: #8a8e9d;
+  content: attr(data-placeholder);
+  pointer-events: none;
+}
+
+.tiptap:focus .tiptap-empty-block::before {
+  display: block;
+}
+
 .tiptap .tiptap-block {
   --tiptap-first-line-height: 27.2px;
   position: relative;
